@@ -2,11 +2,13 @@ name: Build and Push to GHCR
 
 on:
   push:
-    branches: [ "main" ] # ทำงานเมื่อ push ลง branch main
+    branches: [ "main" ] 
+    paths:
+      - 'service-apps/edge-apps/**'
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }} # จะได้เป็นชื่อ username/repo-name
+  IMAGE_NAME: ${{ github.repository }} 
 
 jobs:
   build-and-push:
@@ -24,13 +26,14 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # ใช้ Token อัตโนมัติของ GitHub
+          password: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./service-apps/edge-apps/
+          file: ./service-apps/edge-apps/Dockerfile
           push: true
           tags: |
-            ghcr.io/patiphan-pluem/edge-app:v11
-            ghcr.io/patiphan-pluem/edge-app:${{ github.sha }}
+            ghcr.io/${{ env.IMAGE_NAME }}:v11
+            ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
