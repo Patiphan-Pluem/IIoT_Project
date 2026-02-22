@@ -35,5 +35,5 @@ jobs:
           file: ./service-apps/edge-apps/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.IMAGE_NAME }}:v11
-            ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ghcr.io/patiphan-pluem/iiot-project:v11
+            ghcr.io/patiphan-pluem/iiot-project:${{ github.sha }}
