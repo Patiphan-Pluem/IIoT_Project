@@ -1,0 +1,82 @@
+---
+# PersistentVolume (PV)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana-pv
+  namespace: monitoring
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/home/ubuntu/grafana-data"
+  persistentVolumeReclaimPolicy: Retain
+---
+# PersistentVolumeClaim (PVC)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: monitoring
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# Grafana Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      securityContext:
+        fsGroup: 472
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              hostPort: 3000
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-pvc
+---
+# Grafana Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  selector:
+    app: grafana
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

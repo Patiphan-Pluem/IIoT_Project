@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cadvisor
+  namespace: monitoring
+  labels:
+    app: cadvisor
+spec:
+  selector:
+    matchLabels:
+      app: cadvisor
+  template:
+    metadata:
+      labels:
+        app: cadvisor
+    spec:
+      hostNetwork: true
+      containers:
+        - name: cadvisor
+          args:
+            - --port=8089
+          image: gcr.io/cadvisor/cadvisor:v0.47.0
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 8089
+              hostPort: 8089
+          volumeMounts:
+            - name: rootfs
+              mountPath: /rootfs:ro
+            - name: var-run
+              mountPath: /var/run:ro
+            - name: sys
+              mountPath: /sys:ro
+            - name: containerd
+              mountPath: /var/lib/containerd:ro
+      volumes:
+        - name: rootfs
+          hostPath:
+            path: /
+        - name: var-run
+          hostPath:
+            path: /var/run
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: containerd
+          hostPath:
+            path: /var/lib/rancher/k3s/agent/containerd
