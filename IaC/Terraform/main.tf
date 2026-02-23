@@ -50,79 +50,45 @@ resource "aws_security_group" "cloud_sg" {
     vpc_id = aws_vpc.cloud_vpc.id
     name = "${var.project_name}-cloud-sg"
     
-    # SSH
-    ingress {
-        from_port = 22
-        to_port = 22
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"] 
+    dynamic "ingress" {
+    for_each = [
+      { port = 0,     proto = "icmp", desc = "Allow ICMP" },
+      { port = 22,    proto = "tcp",  desc = "SSH" },
+      { port = 53,    proto = "tcp",  desc = "DNS TCP" },
+      { port = 53,    proto = "udp",  desc = "DNS UDP" },
+      { port = 80,    proto = "tcp",  desc = "HTTP" },
+      { port = 443,   proto = "tcp",  desc = "HTTPS" },
+      { port = 3000,  proto = "tcp",  desc = "Grafana/App" },
+      { port = 4240,  proto = "tcp",  desc = "Cilium Health" },
+      { port = 4244,  proto = "tcp",  desc = "Cilium Hubble" },
+      { port = 4245,  proto = "tcp",  desc = "Cilium Hubble Relay" },
+      { port = 4789,  proto = "udp",  desc = "VXLAN Overlay" },
+      { port = 6443,  proto = "tcp",  desc = "K8s API Server" },
+      { port = 8472,  proto = "udp",  desc = "Cilium VXLAN" },
+      { port = 9090,  proto = "tcp",  desc = "Prometheus" },
+      { port = 10250, proto = "tcp",  desc = "Kubelet API" },
+      { port = 15010, proto = "tcp",  desc = "Istio Control Plane" },
+      { port = 15012, proto = "tcp",  desc = "Istio Control Plane TLS" },
+      { port = 15021, proto = "tcp",  desc = "Istio Health Check" },
+      { port = 32494, proto = "tcp",  desc = "K8s NodePort Service" },
+      { port = 51871, proto = "udp",  desc = "Wireguard Tunnel" }
+    ]
+    content {
+      description      = ingress.value.desc
+      from_port        = ingress.value.port
+      to_port          = ingress.value.port
+      protocol         = ingress.value.proto
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+        }
     }
-    # K3s API
-    ingress {
-        from_port = 6443
-        to_port = 6443
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    # WireGuard / VXLAN
-    ingress {
-        from_port = 51820
-        to_port = 51820
-        protocol = "udp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    ingress {
-        from_port = 4789
-        to_port = 4789
-        protocol = "udp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    # Cilium Health Check
-    ingress {
-        from_port = 4240
-        to_port = 4240
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    # Hubble seerver
-    ingress {
-        from_port = 4244
-        to_port = 4244
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    # Hubble Relay
-    ingress {
-        from_port = 4245
-        to_port = 4245
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    # Ingress HTTP/HTTPS
-    ingress {
-        from_port = 80
-        to_port = 80
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    ingress {
-        from_port = 443
-        to_port = 443
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    #ICMP
-    ingress {
-        from_port = 0
-        to_port = 0
-        protocol = "icmp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    
     egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1" # Allow all traffic out
         cidr_blocks = ["0.0.0.0/0"]
     }
     tags = { Name = "cloud-sg" }
@@ -136,24 +102,24 @@ resource "aws_key_pair" "cloud_key" {
 }
 
 # --- Cloud Instance ---
-data "aws_ami" "ubuntu" {
+data "aws_ami" "my_custom_ubuntu" {
     most_recent = true
-    filter { 
-        name = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"] 
-        }
-    owners = ["099720109477"]
+    owners      = ["self"] 
+    filter {
+        name   = "name"
+        values = ["iiot-backup-before-scale"] 
+    }
 }
 
 resource "aws_instance" "cloud_node" {
-    ami = data.aws_ami.ubuntu.id
-    instance_type = "m7i-flex.large"
+    ami = data.aws_ami.my_custom_ubuntu.id
+    instance_type = "t3a.xlarge"  #"m7i-flex.large"
     subnet_id = aws_subnet.cloud_subnet.id
     vpc_security_group_ids = [aws_security_group.cloud_sg.id]
     key_name = aws_key_pair.cloud_key.key_name
 
     root_block_device {
-        volume_size = 30
+        volume_size = 60 #30
         volume_type = "gp3"
         delete_on_termination = true
     }
@@ -161,7 +127,7 @@ resource "aws_instance" "cloud_node" {
     instance_market_options {
     market_type = "spot"
     spot_options {
-      max_price = "0.07" # ตั้งราคาเพดานไว้เหนือจุดพีค 3 เดือน
+      max_price = "0.12" # ตั้งราคาเพดานไว้เหนือจุดพีค 3 เดือน 0.07
       spot_instance_type = "persistent" # พยายามเปิดเครื่องใหม่ให้ทันทีถ้าโดนดึงคืน
       instance_interruption_behavior = "stop"
         }
@@ -173,7 +139,9 @@ resource "aws_instance" "cloud_node" {
               #!/bin/bash
               apt-get update
               EOF
-
+    lifecycle {
+        ignore_changes = [ami]
+    }
     tags = { Name = "cloud-server", NodeType = "cloud" }
 }
 
