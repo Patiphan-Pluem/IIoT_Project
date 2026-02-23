@@ -80,7 +80,7 @@ spec:
         node-type: edge
       containers:
         - name: pdc
-          image: ghcr.io/patiphan-pluem/edge-app:v11
+          image: ghcr.io/patiphan-pluem/iiot-project:v11
           imagePullPolicy: IfNotPresent
           command: ["python3", "TinyPDC.py"]
           resources:
