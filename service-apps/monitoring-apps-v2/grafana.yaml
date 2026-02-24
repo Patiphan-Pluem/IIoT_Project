@@ -28,7 +28,7 @@ spec:
             datasources:
             - name: Prometheus
               type: prometheus
-              url: http://prometheus-server.monitoring 
+              url: http://prometheus-stack-server.monitoring 
               access: proxy
               isDefault: true
 
