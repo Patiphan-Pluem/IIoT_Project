@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.min.io/
+    chart: minio
+    targetRevision: 5.0.15 
+    helm:
+      values: |
+        # รันบน Cloud Node ตามที่คุณต้องการ
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: "true"
+
+        # การตั้งค่า User/Password สำหรับเข้าหน้า Console
+        rootUser: "admin"
+        rootPassword: "admin" 
+
+        # การเก็บข้อมูลลง Disk (EBS)
+        persistence:
+          enabled: true
+          size: 10Gi 
+
+        consoleService:
+          type: ClusterIP
+
+        mode: standalone
+        replicas: 1
+
+        # ทริค: สร้าง Bucket เริ่มต้นให้เลยอัตโนมัติ
+        buckets:
+          - name: iiot-data
+            policy: public
+            purge: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio-system 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    createNamespace: true
