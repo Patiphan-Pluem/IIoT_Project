@@ -1,0 +1,55 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    targetRevision: 8.5.0 
+    helm:
+      values: |
+        adminPassword: "admin" 
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: "true"
+
+        # การเก็บข้อมูลถาวร (ดีกว่าการใช้ HostPath แบบเดิม)
+        persistence:
+          enabled: true
+          size: 5Gi
+          # ถ้ามี StorageClass อื่นให้ใส่ตรงนี้ ถ้าไม่มีมันจะใช้ Default ของ K3s (Local Path)
+
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-server.monitoring 
+              access: proxy
+              isDefault: true
+
+        # ทริคเด็ด: สั่งให้ Grafana ไปดึง Dashboard มาตรฐานของ Kubernetes มาโชว์เลย
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+            - name: 'default'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    createNamespace: true

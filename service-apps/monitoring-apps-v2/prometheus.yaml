@@ -1,0 +1,62 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus
+    targetRevision: 25.27.0  
+    helm:
+      values: |
+        deploymentStrategy:
+          type: Recreate # เหมาะสำหรับ Prometheus ที่มี 1 replica และใช้ storage
+
+        server:
+          persistentVolume:
+            size: 10Gi  
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: "true" 
+          
+          # คอนฟิกให้ Prometheus มองเห็น cAdvisor ที่แฝงอยู่ใน Kubelet ของ K3s
+          extraScrapeConfigs: |
+            - job_name: 'k3s-cadvisor'
+              scheme: https
+              metrics_path: /metrics/cadvisor
+              tls_config:
+                insecure_skip_verify: true
+              kubernetes_sd_configs:
+                - role: node
+              relabel_configs:
+                - action: labelmap
+                  regex: __meta_kubernetes_node_label_(.+)
+
+        # ตัวดึงข้อมูลสถานะของ Object (Pod, Deployment, HPA)
+        kube-state-metrics:
+          enabled: true
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: "true"
+
+        # ตัวดึงข้อมูลระดับ OS ของ Node (CPU/RAM/Disk ของเครื่อง)
+        prometheus-node-exporter:
+          enabled: true
+          # ตัวนี้จะลงเป็น DaemonSet โดยอัตโนมัติ (ไปโผล่ทั้ง Cloud และ Edge)
+
+        # ปิดสิ่งที่ไม่จำเป็นเพื่อประหยัดทรัพยากร
+        alertmanager:
+          enabled: false
+        prometheus-pushgateway:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    createNamespace: true
+---
