@@ -17,12 +17,16 @@ spec:
           tag: 2.11.0-pg14
 
         primary:
+          containerSecurityContext:
+            enabled: true
+            runAsUser: 999
+            
           nodeSelector:
             node-type: edge
           
           sidecars:
             - name: wal-g
-              image: ghcr.io/wal-g/wal-g:v2.0.1
+              image: quay.io/wal-g/wal-g:v2.0.1
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
@@ -42,7 +46,7 @@ spec:
                   value: "us-east-1"
               volumeMounts:
                 - name: data
-                  mountPath: /bitnami/postgresql
+                  mountPath: /var/lib/postgresql/data
 
         # ตั้งค่า PostgreSQL
         postgresqlConfiguration: |
