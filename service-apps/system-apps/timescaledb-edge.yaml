@@ -22,15 +22,19 @@ spec:
               image: bitnami/wal-g:latest
               env:
                 - name: WALG_S3_PREFIX
-                  value: "s3://iiot-data/timescaledb-wal" 
+                  value: "s3://iiot-data/timescaledb-wal"
                 - name: AWS_ACCESS_KEY_ID
-                  value: "minioadmin"
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-keys
+                      key: access-key
                 - name: AWS_SECRET_ACCESS_KEY
-                  value: "minioadmin" 
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-keys
+                      key: secret-key
                 - name: AWS_ENDPOINT
-                  value: "http://minio.minio-system.svc.cluster.local:9000" 
-                - name: AWS_REGION
-                  value: "us-east-1"
+                  value: "http://minio.minio-system.svc.cluster.local:9000"
               volumeMounts:
                 - name: data
                   mountPath: /bitnami/postgresql
