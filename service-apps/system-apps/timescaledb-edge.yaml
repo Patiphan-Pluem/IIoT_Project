@@ -14,15 +14,15 @@ spec:
         primary:
           image:
             registry: docker.io
-            repository: bitnami/postgresql
-            tag: 16.2.0-debian-11-r17
+            repository: timescale/timescaledb
+            tag: 2.11.0-pg14
           nodeSelector:
             node-type: edge
           
           # ใส่ Sidecar สำหรับรัน WAL-G
           sidecars:
             - name: wal-g
-              image: public.ecr.aws/bitnami/wal-g:latest
+              image: ghcr.io/wal-g/wal-g:v3.0.8
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
