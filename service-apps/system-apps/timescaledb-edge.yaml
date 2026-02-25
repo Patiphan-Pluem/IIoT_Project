@@ -11,18 +11,18 @@ spec:
     targetRevision: 15.5.x 
     helm:
       values: |
+        image:
+          registry: docker.io
+          repository: timescale/timescaledb
+          tag: 2.11.0-pg14
+
         primary:
-          image:
-            registry: docker.io
-            repository: timescale/timescaledb
-            tag: 2.11.0-pg14
           nodeSelector:
             node-type: edge
           
-          # ใส่ Sidecar สำหรับรัน WAL-G
           sidecars:
             - name: wal-g
-              image: ghcr.io/wal-g/wal-g:v3.0.8
+              image: docker.io/walg/wal-g:latest 
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
@@ -38,10 +38,13 @@ spec:
                       key: secret-key
                 - name: AWS_ENDPOINT
                   value: "http://minio.minio-system.svc.cluster.local:9000"
+                - name: AWS_REGION
+                  value: "us-east-1"
               volumeMounts:
                 - name: data
                   mountPath: /bitnami/postgresql
 
+        # ตั้งค่า PostgreSQL
         postgresqlConfiguration: |
           archive_mode = on
           archive_command = 'wal-g wal-push %p'
