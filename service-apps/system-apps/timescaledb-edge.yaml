@@ -22,7 +22,7 @@ spec:
           # ใส่ Sidecar สำหรับรัน WAL-G
           sidecars:
             - name: wal-g
-              image: ghcr.io/wal-g/wal-g:latest
+              image: public.ecr.aws/bitnami/wal-g:latest
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
