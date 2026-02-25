@@ -11,15 +11,18 @@ spec:
     targetRevision: 15.5.x 
     helm:
       values: |
-        # เลือก Node ที่เป็น Edge 
         primary:
+          image:
+            registry: docker.io
+            repository: bitnami/postgresql
+            tag: 16.2.0-debian-11-r17
           nodeSelector:
             node-type: edge
           
           # ใส่ Sidecar สำหรับรัน WAL-G
           sidecars:
             - name: wal-g
-              image: bitnami/wal-g:latest
+              image: ghcr.io/wal-g/wal-g:latest
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
