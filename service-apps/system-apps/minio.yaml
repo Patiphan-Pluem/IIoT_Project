@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: minio-system 
+  name: minio-system
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://charts.min.io/
     chart: minio
-    targetRevision: 5.0.15 
+    targetRevision: 5.0.15
     helm:
       values: |
         # รันบน Cloud Node ตามที่คุณต้องการ
@@ -21,8 +21,8 @@ spec:
           node-role.kubernetes.io/control-plane: "true"
 
         # การตั้งค่า User/Password สำหรับเข้าหน้า Console
-        rootUser: "admin"
-        rootPassword: "admin" 
+        rootUser: "minioadmin"
+        rootPassword: "minioadmin" 
 
         # การเก็บข้อมูลลง Disk (EBS)
         persistence:
@@ -49,7 +49,7 @@ spec:
             purge: false
   destination:
     server: https://kubernetes.default.svc
-    namespace: minio-system 
+    namespace: minio-system
   syncPolicy:
     automated:
       prune: false
