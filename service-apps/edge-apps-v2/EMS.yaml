@@ -30,7 +30,7 @@ spec:
           command: ["python", "ems_simulator.py"]
           env:
             - name: DB_HOST
-              value: "timescaledb-service.edge-apps"
+              value: "timescaledb-edge-postgresql.edge-apps"
             - name: DB_PASS
               value: "password"
             - name: SIM_MODE        

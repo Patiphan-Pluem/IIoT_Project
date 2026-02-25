@@ -94,6 +94,6 @@ spec:
             - name: PMU_IP
               value: "pmu-service.edge-apps"
             - name: DB_HOST
-              value: "timescaledb-service.edge-apps"
+              value: "timescaledb-edge-postgresql.edge-apps"
 ---
 
