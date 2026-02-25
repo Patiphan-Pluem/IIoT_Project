@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: edge-apps
+  # labels:
+  # #  istio-injection: enabled
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pmu-service
+  namespace: edge-apps
+spec:
+  # selector:
+  #   app: pmu
+  ports:
+    - protocol: TCP
+      port: 1410
+      targetPort: 1410
+---
+# 3. ระบุเลข IP ของเครื่อง PMU ที่อยู่นอก Cluster
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pmu-service
+  namespace: edge-apps
+subsets:
+  - addresses:
+      - ip: 192.168.177.140
+    ports:
+      - port: 1410
+---
+# apiVersion: apps/v1
+# kind: DaemonSet
+# metadata:
+#   name: pmu-deployment
+#   namespace: edge-apps
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: pmu
+#   template:
+#     metadata:
+#       labels:
+#         app: pmu
+#     spec:
+#       nodeSelector:
+#         node-type: edge
+#       containers:
+#         - name: pmu
+#           image: ghcr.io/patiphan-pluem/edge-app:v9
+#           imagePullPolicy: IfNotPresent
+#           command: ["python", "TinyPMU.py"]
+#           resources:
+#             requests:
+#               memory: "128Mi"
+#               cpu: "50m"
+#             limits:
+#               memory: "512Mi"
+#               cpu: "500m"
+#           ports:
+#             - containerPort: 1410
+# ---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pdc-deployment
+  namespace: edge-apps
+spec:
+  selector:
+    matchLabels:
+      app: pdc
+  template:
+    metadata:
+      labels:
+        app: pdc
+    spec:
+      nodeSelector:
+        node-type: edge
+      containers:
+        - name: pdc
+          image: ghcr.io/patiphan-pluem/iiot-project:v11
+          imagePullPolicy: IfNotPresent
+          command: ["python3", "TinyPDC.py"]
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: PMU_IP
+              value: "pmu-service.edge-apps"
+            - name: DB_HOST
+              value: "timescaledb-service.edge-apps"
+---
+

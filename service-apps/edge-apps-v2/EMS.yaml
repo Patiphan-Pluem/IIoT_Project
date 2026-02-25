@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ems-a
+  namespace: edge-apps
+spec:
+  selector:
+    matchLabels:
+      app: ems
+  template:
+    metadata:
+      labels:
+        app: ems
+    spec:
+      nodeSelector:
+        node-type: edge
+
+      topologySpreadConstraints:
+        - maxSkew: 1 
+          topologyKey: "kubernetes.io/hostname" 
+          whenUnsatisfiable: ScheduleAnyway 
+          labelSelector:
+            matchLabels:
+              app: ems
+
+      containers:
+        - name: ems
+          image: ghcr.io/patiphan-pluem/iiot-project:v11
+          imagePullPolicy: IfNotPresent
+          command: ["python", "ems_simulator.py"]
+          env:
+            - name: DB_HOST
+              value: "timescaledb-service.edge-apps"
+            - name: DB_PASS
+              value: "password"
+            - name: SIM_MODE        
+              value: "loop"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

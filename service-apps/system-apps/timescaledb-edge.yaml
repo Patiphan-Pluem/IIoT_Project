@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: timescaledb-edge
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: postgresql
+    targetRevision: 15.5.x 
+    helm:
+      values: |
+        # เลือก Node ที่เป็น Edge 
+        primary:
+          nodeSelector:
+            node-type: edge
+          
+          # ใส่ Sidecar สำหรับรัน WAL-G
+          sidecars:
+            - name: wal-g
+              image: bitnami/wal-g:latest
+              env:
+                - name: WALG_S3_PREFIX
+                  value: "s3://iiot-data/timescaledb-wal" 
+                - name: AWS_ACCESS_KEY_ID
+                  value: "minioadmin"
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: "minioadmin" 
+                - name: AWS_ENDPOINT
+                  value: "http://minio.minio-system.svc.cluster.local:9000" 
+                - name: AWS_REGION
+                  value: "us-east-1"
+              volumeMounts:
+                - name: data
+                  mountPath: /bitnami/postgresql
+
+        postgresqlConfiguration: |
+          archive_mode = on
+          archive_command = 'wal-g wal-push %p'
+          shared_preload_libraries = 'timescaledb'
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+
+        persistence:
+          enabled: true
+          size: 2Gi 
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: edge-apps 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    createNamespace: true
