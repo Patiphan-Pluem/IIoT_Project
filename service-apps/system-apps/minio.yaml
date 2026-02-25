@@ -35,6 +35,13 @@ spec:
         mode: standalone
         replicas: 1
 
+        resources:
+          requests:
+            memory: "512Mi" 
+            cpu: "250m"
+          limits:
+            memory: "2Gi"   
+
         # ทริค: สร้าง Bucket เริ่มต้นให้เลยอัตโนมัติ
         buckets:
           - name: iiot-data
