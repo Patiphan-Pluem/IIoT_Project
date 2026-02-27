@@ -26,7 +26,7 @@ spec:
           
           sidecars:
             - name: wal-g
-              image: quay.io/wal-g/wal-g:v2.0.1
+              image: ghcr.io/wal-g/wal-g:v2.0.1
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
