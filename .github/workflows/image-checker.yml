@@ -14,4 +14,4 @@ jobs:
           sudo apt-get install -y skopeo # ติดตั้งเครื่องมือที่ใช้เช็ค Image
 
       - name: Run Checker Script
-        run: python3 scripts/check_images.py 
+        run: python3 scripts/image-checker.py 
