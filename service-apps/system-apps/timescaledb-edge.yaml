@@ -11,6 +11,9 @@ spec:
     targetRevision: 15.5.x 
     helm:
       values: |
+        podSecurityContext:
+          fsGroup: 1001
+
         image:
           registry: docker.io
           repository: timescale/timescaledb
@@ -19,7 +22,7 @@ spec:
         primary:
           containerSecurityContext:
             enabled: true
-            runAsUser: 999
+            runAsUser: 1001
             
           nodeSelector:
             node-type: edge
@@ -27,6 +30,9 @@ spec:
           sidecars:
             - name: wal-g
               image: chekkan/wal-g:latest-pg
+              securityContext:
+                runAsUser: 1001
+                
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
