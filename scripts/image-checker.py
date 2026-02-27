@@ -30,8 +30,21 @@ def check_image_existence(image):
 print(f"🚀 Scanning for images in {SEARCH_DIR}...")
 images_to_check = get_images_from_yaml(SEARCH_DIR)
 
+    
 print(f"🔍 Found {len(images_to_check)} unique images. Starting validation...\n")
+
+all_passed = True  
 
 for img in images_to_check:
     status, msg = check_image_existence(img)
     print(f"{img:<50} | {msg}")
+    if not status:
+        all_passed = False  
+
+
+if not all_passed:
+    print("\n❌ CI Failed: Some images are not accessible.")
+    exit(1)  
+else:
+    print("\n✅ CI Passed: All images are accessible.")
+    exit(0)
