@@ -23,6 +23,14 @@ spec:
           containerSecurityContext:
             enabled: true
             runAsUser: 1001
+          
+          extraVolumes:
+            - name: postgres-run
+              emptyDir: {}
+
+          extraVolumeMounts:
+            - name: postgres-run
+              mountPath: /var/run/postgresql
             
           nodeSelector:
             node-type: edge
@@ -30,9 +38,16 @@ spec:
           sidecars:
             - name: wal-g
               image: chekkan/wal-g:latest-pg
+              command: ["sh", "-c"]
+
+              args:
+                - |
+                  echo "WAL-G sidecar is starting..."
+                  sleep infinity
+
               securityContext:
                 runAsUser: 1001
-                
+
               env:
                 - name: WALG_S3_PREFIX
                   value: "s3://iiot-data/timescaledb-wal"
@@ -53,6 +68,8 @@ spec:
               volumeMounts:
                 - name: data
                   mountPath: /var/lib/postgresql/data
+                - name: postgres-run
+                  mountPath: /var/run/postgresql
 
         # ตั้งค่า PostgreSQL
         postgresqlConfiguration: |
