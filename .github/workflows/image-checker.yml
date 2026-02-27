@@ -1,0 +1,17 @@
+name: Image Availability Checker
+on: [push, pull_request] # รันทุกครั้งที่มีการ Push หรือแก้ไฟล์
+
+jobs:
+  check-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo # ติดตั้งเครื่องมือที่ใช้เช็ค Image
+
+      - name: Run Checker Script
+        run: python3 scripts/check_images.py 
