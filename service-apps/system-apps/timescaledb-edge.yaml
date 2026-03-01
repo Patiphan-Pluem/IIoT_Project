@@ -13,6 +13,25 @@ spec:
       values: |
         auth:
           postgresPassword: "password"
+        
+        primary:
+          initdb:
+            scripts:
+              01_init_pmu_table.sql: |
+                -- สร้าง Extension เผื่อไว้ (สำคัญสำหรับ Hypertable)
+                CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+                
+                -- สร้างตารางหลัก
+                CREATE TABLE IF NOT EXISTS pmu_measurements (
+                    time TIMESTAMPTZ NOT NULL,
+                    frequency DOUBLE PRECISION,
+                    magnitude DOUBLE PRECISION, angle DOUBLE PRECISION,
+                    mag_b DOUBLE PRECISION, ang_b DOUBLE PRECISION,
+                    mag_c DOUBLE PRECISION, ang_c DOUBLE PRECISION
+                );
+                
+                -- ทำให้เป็น Hypertable ทันทีที่ Database เกิด
+                SELECT create_hypertable('pmu_measurements', 'time', if_not_exists => TRUE);
 
         podSecurityContext:
           fsGroup: 1001
