@@ -11,6 +11,9 @@ spec:
     targetRevision: 15.5.x 
     helm:
       values: |
+        auth:
+          postgresPassword: "password"
+
         podSecurityContext:
           fsGroup: 1001
 
