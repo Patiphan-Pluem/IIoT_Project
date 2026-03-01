@@ -95,5 +95,12 @@ spec:
               value: "pmu-service.edge-apps"
             - name: DB_HOST
               value: "timescaledb-edge-postgresql.edge-apps"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-edge-postgresql
+                  key: postgres-password
 ---
 
