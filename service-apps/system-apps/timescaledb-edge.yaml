@@ -12,6 +12,7 @@ spec:
     helm:
       values: |
         auth:
+          username: "postgres"
           postgresPassword: "password"
         
         primary:
