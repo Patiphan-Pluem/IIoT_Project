@@ -80,7 +80,7 @@ spec:
         node-role.kubernetes.io/control-plane: "true"
       containers:
         - name: pdc
-          image: ghcr.io/patiphan-pluem/iiot-project:v12
+          image: ghcr.io/patiphan-pluem/iiot-project:v13
           imagePullPolicy: IfNotPresent
           command: ["python3", "TinyPDC.py"]
           resources:

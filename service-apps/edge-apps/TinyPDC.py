@@ -40,6 +40,6 @@ if __name__ == "__main__":
             
             print(f"Latency: {latency * 1000:.4f} ms")
 
-        if not data:
-            pdc.quit()
-            break
+        # if not data:
+        #     pdc.quit()
+        #     break
