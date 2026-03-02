@@ -50,11 +50,15 @@ spec:
           extraVolumes:
             - name: postgres-run
               emptyDir: {}
+            - name: wal-g-bin  
+              emptyDir: {}
 
           extraVolumeMounts:
             - name: postgres-run
               mountPath: /var/run/postgresql
-            
+            - name: wal-g-bin
+              mountPath: /usr/local/bin
+
           nodeSelector:
             node-type: edge
           
@@ -66,6 +70,9 @@ spec:
               args:
                 - |
                   echo "WAL-G sidecar is starting..."
+                  cp /usr/local/bin/wal-g /shared-bin/wal-g 
+                  chmod +x /shared-bin/wal-g
+                  echo "WAL-G binary shared successfully"
                   sleep infinity
 
               securityContext:
@@ -93,6 +100,8 @@ spec:
                   mountPath: /var/lib/postgresql/data
                 - name: postgres-run
                   mountPath: /var/run/postgresql
+                - name: wal-g-bin
+                  mountPath: /shared-bin
 
         # ตั้งค่า PostgreSQL
         postgresqlConfiguration: |
