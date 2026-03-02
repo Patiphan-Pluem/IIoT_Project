@@ -57,7 +57,7 @@ spec:
             - name: postgres-run
               mountPath: /var/run/postgresql
             - name: wal-g-bin
-              mountPath: /usr/local/bin
+              mountPath: /opt/wal-g
 
           nodeSelector:
             node-type: edge
@@ -95,6 +95,7 @@ spec:
                   value: "http://minio.minio-system.svc.cluster.local:9000"
                 - name: AWS_REGION
                   value: "us-east-1"
+                  
               volumeMounts:
                 - name: data
                   mountPath: /var/lib/postgresql/data
@@ -106,7 +107,7 @@ spec:
         # ตั้งค่า PostgreSQL
         postgresqlConfiguration: |
           archive_mode = on
-          archive_command = 'wal-g wal-push %p'
+          archive_command = '/opt/wal-g/wal-g wal-push %p'
           shared_preload_libraries = 'timescaledb'
 
         resources:
