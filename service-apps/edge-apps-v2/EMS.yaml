@@ -12,8 +12,25 @@ spec:
       labels:
         app: ems
     spec:
-      nodeSelector:
-        node-type: edge
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-type
+                    operator: In
+                    values:
+                      - edge
+                      - cloud
+          
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: node-type
+                    operator: In
+                    values:
+                      - edge
 
       topologySpreadConstraints:
         - maxSkew: 1 
