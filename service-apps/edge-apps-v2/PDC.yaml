@@ -77,10 +77,10 @@ spec:
         app: pdc
     spec:
       nodeSelector:
-        node-type: edge
+        node-role.kubernetes.io/control-plane: "true"
       containers:
         - name: pdc
-          image: ghcr.io/patiphan-pluem/iiot-project:v11
+          image: ghcr.io/patiphan-pluem/iiot-project:v12
           imagePullPolicy: IfNotPresent
           command: ["python3", "TinyPDC.py"]
           resources:
