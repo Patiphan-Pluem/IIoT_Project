@@ -42,3 +42,4 @@ spec:
           value: "timescaledb-{{ .name }}-0.db-service-{{ .name }}" 
         - name: PMU_IP
           value: "pmu-service-{{ .name }}"
+{{- end }}
