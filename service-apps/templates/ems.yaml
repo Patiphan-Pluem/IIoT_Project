@@ -1,0 +1,42 @@
+{{- range .Values.edges }}
+---
+# --- Deployment สำหรับ EMS ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ems-{{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ems
+      edge: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: ems
+        edge: {{ .name }}
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ .name }}" ]
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ $.Values.cloud_node_name }}" ]
+      containers:
+      - name: ems
+        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+        command: ["python", "{{ $.Values.scripts.ems }}"]
+        env:
+        - name: DB_HOST
+          value: "timescaledb-{{ .name }}-0.db-service-{{ .name }}" 
+{{- end }}

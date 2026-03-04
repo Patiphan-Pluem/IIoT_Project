@@ -1,0 +1,43 @@
+{{- range .Values.edges }}
+---
+# --- Deployment สำหรับ PDC ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdc-{{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pdc
+      edge: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: pdc
+        edge: {{ .name }}
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ .name }}" ]
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ $.Values.cloud_node_name }}" ]
+      containers:
+      - name: pdc
+        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+        command: ["python", "{{ $.Values.scripts.pdc }}"]
+        env:
+        - name: DB_HOST
+          value: "timescaledb-{{ .name }}-0.db-service-{{ .name }}" 
+        - name: PMU_IP
+          value: "pmu-service-{{ .name }}"

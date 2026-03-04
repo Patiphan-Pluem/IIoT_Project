@@ -1,0 +1,25 @@
+{{- range .Values.edges }}
+---
+# 1. Service สำหรับให้ PDC เรียกหา PMU
+apiVersion: v1
+kind: Service
+metadata:
+  name: pmu-service-{{ .name }} 
+spec:
+  ports:
+    - protocol: TCP
+      port: 1410 
+      targetPort: 1410
+
+---
+# 2. Endpoints เพื่อระบุ IP จริงของเครื่อง Edge
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pmu-service-{{ .name }}
+subsets:
+  - addresses:
+      - ip: {{ .pmu_ip }} 
+    ports:
+      - port: 1410
+{{- end }}

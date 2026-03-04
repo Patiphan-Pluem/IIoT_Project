@@ -1,0 +1,53 @@
+{{- range .Values.edges }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service-{{ .name }}
+spec:
+  clusterIP: None
+  selector:
+    app: timescaledb
+    edge: {{ .name }}
+  ports:
+    - port: 5432
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: timescaledb-{{ .name }}
+spec:
+  serviceName: "db-service-{{ .name }}"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timescaledb
+      edge: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: timescaledb
+        edge: {{ .name }}
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ .name }}" ] 
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ $.Values.cloud_node_name }}" ] 
+      containers:
+      - name: timescale
+        image: {{ $.Values.images.timescaledb }}
+        ports:
+        - containerPort: 5432
+{{- end }}
