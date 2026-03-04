@@ -32,6 +32,21 @@ spec:
         app: timescaledb
         edge: {{ .name }}
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ .name }}" ] 
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values: [ "{{ $.Values.cloud_node_name }}" ]
       containers:
         - name: timescaledb
           image: {{ $.Values.images.timescaledb }}
