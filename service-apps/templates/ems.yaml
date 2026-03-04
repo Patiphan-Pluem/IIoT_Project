@@ -5,6 +5,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ems-{{ .name }}
+  namespace: edge-apps
 spec:
   replicas: 1
   selector:

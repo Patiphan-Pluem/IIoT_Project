@@ -5,6 +5,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pmu-service-{{ .name }} 
+  namespace: edge-apps
 spec:
   ports:
     - protocol: TCP
@@ -17,6 +18,7 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   name: pmu-service-{{ .name }}
+  namespace: edge-apps
 subsets:
   - addresses:
       - ip: {{ .pmu_ip }} 
