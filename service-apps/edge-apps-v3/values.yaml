@@ -1,11 +1,11 @@
 # values.yaml
 edges:
-  - name: edge-a
-    pmu_ip: "192.168.177.140" 
+  # - name: edge-a
+  #   pmu_ip: "192.168.177.140" 
   - name: edge-b
     pmu_ip: "192.168.177.140" 
-  - name: edge-c
-    pmu_ip: "192.168.177.140" 
+  # - name: edge-c
+  #   pmu_ip: "192.168.177.140" 
 
 image:
   repository: "ghcr.io/patiphan-pluem/iiot-project"
