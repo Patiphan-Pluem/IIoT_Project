@@ -13,7 +13,7 @@ def get_images_from_yaml(directory):
                     content = f.read()
                     found = re.findall(r'image:\s*"?([^"\s]+)"?', content)
                     for img in found:
-                        if ":" in img and "{{" not in img and "registry:" not in img:
+                        if ":" in img and "{{" not in img and "registry:" not in img and "repository:" not in img:
                             images.add(img)
     return images
 
