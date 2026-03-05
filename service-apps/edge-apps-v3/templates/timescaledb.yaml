@@ -58,6 +58,35 @@ spec:
           volumeMounts:
             - name: db-storage
               mountPath: /var/lib/postgresql/data
+        - name: wal-g-sidecar
+          image: {{ $.Values.images.wal-g }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: rootUser     
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: rootPassword 
+            - name: WALE_S3_PREFIX
+              value: "s3://pmu-backup/{{ .name }}" 
+            - name: AWS_ENDPOINT
+              value: "http://minio.minio-system.svc.cluster.local:9000"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              while true; do
+                wal-g wal-push /var/lib/postgresql/data/pgdata/pg_wal
+                sleep 60
+              done
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
     - metadata:
         name: db-storage

@@ -14,6 +14,7 @@ image:
 
 images:
   timescaledb: "timescale/timescaledb:2.11.0-pg14"  
+  wal-g: "chekkan/wal-g:latest-pg"
 
 scripts:
   pdc: "TinyPDC.py" 
