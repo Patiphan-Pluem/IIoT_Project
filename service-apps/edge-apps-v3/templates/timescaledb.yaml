@@ -59,7 +59,7 @@ spec:
             - name: db-storage
               mountPath: /var/lib/postgresql/data
         - name: wal-g-sidecar
-          image: {{ $.Values.images.wal-g }}
+          image: {{ index $.Values.images "wal-g" | quote }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
