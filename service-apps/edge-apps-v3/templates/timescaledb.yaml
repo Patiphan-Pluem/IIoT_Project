@@ -60,6 +60,9 @@ spec:
               mountPath: /var/lib/postgresql/data
         - name: wal-g-sidecar
           image: {{ index $.Values.images "wal-g" | quote }}
+          securityContext:
+            runAsUser: 70  
+            runAsGroup: 70
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
