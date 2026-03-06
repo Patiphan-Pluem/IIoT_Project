@@ -71,6 +71,10 @@ spec:
                 secretKeyRef:
                   name: wal-g-creds
                   key: secret-key
+            - name: AWS_REGION
+              value: "ap-southeast-1"
+            - name: AWS_S3_FORCE_PATH_STYLE
+              value: "true"
             - name: WALE_S3_PREFIX
               value: "s3://pmu-backup/{{ .name }}" 
             - name: AWS_ENDPOINT
