@@ -92,9 +92,13 @@ spec:
               value: "http://minio.minio-system.svc.cluster.local:9000"
             - name: PGDATA
               value: "/var/lib/postgresql/data/pgdata"
+            - name: WALG_COMPRESSION_METHOD
+              value: "lz4"
           command: ["/bin/sh", "-c"]
           args:
             - |
+              mkdir -p /tmp/wal-g-temp  
+              export WALG_DISK_CACHE_PATH=/tmp/wal-g-temp
               while true; do
                 wal-g wal-push /var/lib/postgresql/data/pgdata/pg_wal
                 sleep 60
