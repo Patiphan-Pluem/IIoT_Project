@@ -32,7 +32,7 @@ spec:
         app: timescaledb
         edge: {{ .name }}
     spec:
-    initContainers:
+      initContainers:
         - name: install-wal-g
           image: {{ index $.Values.images "wal-g" | quote }}
           command: ["sh", "-c", "cp /usr/local/bin/wal-g /common/bin/wal-g && chmod +x /common/bin/wal-g"]
