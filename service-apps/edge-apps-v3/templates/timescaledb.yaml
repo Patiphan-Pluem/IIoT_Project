@@ -64,13 +64,13 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: minio
-                  key: rootUser     
+                  name: wal-g-creds
+                  key: access-key     
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio
-                  key: rootPassword 
+                  name: wal-g-creds
+                  key: secret-key
             - name: WALE_S3_PREFIX
               value: "s3://pmu-backup/{{ .name }}" 
             - name: AWS_ENDPOINT

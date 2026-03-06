@@ -1,0 +1,13 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: cluster-secret-store
+spec:
+  provider:
+    kubernetes: 
+      remoteNamespace: minio-system 
+      server:
+        caProvider:
+          type: ConfigMap
+          name: kube-root-ca.crt
+          key: ca.crt
