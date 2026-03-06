@@ -47,6 +47,12 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values: [ "{{ $.Values.cloud_node_name }}" ]
+                
+      securityContext:
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
+
       containers:
         - name: timescaledb
           image: {{ $.Values.images.timescaledb }}
@@ -60,10 +66,6 @@ spec:
               mountPath: /var/lib/postgresql/data
         - name: wal-g-sidecar
           image: {{ index $.Values.images "wal-g" | quote }}
-          securityContext:
-            runAsUser: 70  
-            runAsGroup: 70
-            runAsNonRoot: true
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
