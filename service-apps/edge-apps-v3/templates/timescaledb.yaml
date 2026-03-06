@@ -47,15 +47,16 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values: [ "{{ $.Values.cloud_node_name }}" ]
-                
+
       securityContext:
-        runAsUser: 70
-        runAsGroup: 70
         fsGroup: 70
 
       containers:
         - name: timescaledb
           image: {{ $.Values.images.timescaledb }}
+          securityContext:
+            runAsUser: 70    
+            runAsGroup: 70
           env:
             - name: POSTGRES_PASSWORD
               value: "password"
