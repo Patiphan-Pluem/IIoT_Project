@@ -32,6 +32,10 @@ spec:
         app: timescaledb
         edge: {{ .name }}
     spec:
+      volumes:
+        - name: bin-storage
+          emptyDir: {}
+          
       initContainers:
         - name: install-wal-g
           image: {{ index $.Values.images "wal-g" | quote }}
