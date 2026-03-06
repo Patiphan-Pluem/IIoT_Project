@@ -32,6 +32,14 @@ spec:
         app: timescaledb
         edge: {{ .name }}
     spec:
+    initContainers:
+        - name: install-wal-g
+          image: {{ index $.Values.images "wal-g" | quote }}
+          command: ["sh", "-c", "cp /usr/local/bin/wal-g /common/bin/wal-g && chmod +x /common/bin/wal-g"]
+          volumeMounts:
+            - name: bin-storage
+              mountPath: /common/bin
+
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -54,6 +62,15 @@ spec:
       containers:
         - name: timescaledb
           image: {{ $.Values.images.timescaledb }}
+
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              exec docker-entrypoint.sh postgres \
+              -c archive_mode=on \
+              -c archive_command='/common/bin/wal-g wal-push %p' \
+              -c archive_timeout=60
+
           securityContext:
             runAsUser: 70    
             runAsGroup: 70
@@ -105,7 +122,7 @@ spec:
               export WALG_DISK_CACHE_PATH=/tmp/wal-g-temp
               while true; do
                 wal-g wal-push /var/lib/postgresql/data/pgdata/pg_wal
-                sleep 60
+                sleep 86400
               done
           volumeMounts:
             - name: db-storage
