@@ -1,143 +1,66 @@
 {{- range .Values.edges }}
 ---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: timescaledb-{{ .name }}
+  namespace: edge-apps
+spec:
+  instances: 1
+  imageName: {{ $.Values.images.timescaledb }}
+
+  storage:
+    size: 1Gi
+    storageClass: local-path
+
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values: [ {{ .name  }} ]
+      - weight: 50
+        preference:
+          matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values: [ {{ $.Values.cloud_node_name }} ]
+
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://pmu-backup/{{ .name }}/
+      endpointURL: http://minio.minio-system.svc.cluster.local:9000
+      s3Credentials:
+        accessKeyId:
+          name: wal-g-creds
+          key: access-key
+        secretAccessKey:
+          name: wal-g-creds
+          key: secret-key
+      wal:
+        compression: lz4
+      data:
+        compression: lz4
+        jobs: 2
+
+  postgresql:
+    parameters:
+      shared_preload_libraries: "timescaledb"
+
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: db-service-{{ .name }}
   namespace: edge-apps
 spec:
-  clusterIP: None
   selector:
-    app: timescaledb
-    edge: {{ .name }}
+    cnpg.io/cluster: timescaledb-{{ .name }}
+    cnpg.io/podRole: instance
   ports:
     - port: 5432
-
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: timescaledb-{{ .name }}
-  namespace: edge-apps
-spec:
-  serviceName: "db-service-{{ .name }}"
-  replicas: 1
-  selector:
-    matchLabels:
-      app: timescaledb
-      edge: {{ .name }}
-  template:
-    metadata:
-      labels:
-        app: timescaledb
-        edge: {{ .name }}
-    spec:
-      volumes:
-        - name: bin-storage
-          emptyDir: {}
-          
-      initContainers:
-        - name: install-wal-g
-          image: {{ index $.Values.images "wal-g" | quote }}
-          command: ["sh", "-c", "cp /usr/local/bin/wal-g /common/bin/wal-g && chmod +x /common/bin/wal-g"]
-          volumeMounts:
-            - name: bin-storage
-              mountPath: /common/bin
-
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values: [ "{{ .name }}" ] 
-          - weight: 50
-            preference:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values: [ "{{ $.Values.cloud_node_name }}" ]
-
-      securityContext:
-        fsGroup: 70
-
-      containers:
-        - name: timescaledb
-          image: {{ $.Values.images.timescaledb }}
-
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              exec docker-entrypoint.sh postgres \
-              -c archive_mode=on \
-              -c archive_command='/common/bin/wal-g wal-push %p' \
-              -c archive_timeout=60
-
-          securityContext:
-            runAsUser: 70    
-            runAsGroup: 70
-          env:
-            - name: POSTGRES_PASSWORD
-              value: "password"
-            - name: PGDATA
-              value: "/var/lib/postgresql/data/pgdata"
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-          volumeMounts:
-            - name: db-storage
-              mountPath: /var/lib/postgresql/data
-        - name: wal-g-sidecar
-          image: {{ index $.Values.images "wal-g" | quote }}
-          securityContext:
-            runAsUser: 0     
-            runAsGroup: 0
-            runAsNonRoot: false
-          env:
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: wal-g-creds
-                  key: access-key     
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: wal-g-creds
-                  key: secret-key
-            - name: AWS_REGION
-              value: "ap-southeast-1"
-            - name: AWS_S3_FORCE_PATH_STYLE
-              value: "true"
-            - name: WALE_S3_PREFIX
-              value: "s3://pmu-backup/{{ .name }}" 
-            - name: AWS_ENDPOINT
-              value: "http://minio.minio-system.svc.cluster.local:9000"
-            - name: PGDATA
-              value: "/var/lib/postgresql/data/pgdata"
-            - name: WALG_COMPRESSION_METHOD
-              value: "lz4"
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              mkdir -p /tmp/wal-g-temp  
-              export WALG_DISK_CACHE_PATH=/tmp/wal-g-temp
-              while true; do
-                wal-g wal-push /var/lib/postgresql/data/pgdata/pg_wal
-                sleep 86400
-              done
-          volumeMounts:
-            - name: db-storage
-              mountPath: /var/lib/postgresql/data
-  volumeClaimTemplates:
-    - metadata:
-        name: db-storage
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: local-path
-        resources:
-          requests:
-            storage: 0.5Gi
+      targetPort: 5432
 {{- end }}
