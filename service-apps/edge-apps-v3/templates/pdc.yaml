@@ -39,7 +39,7 @@ spec:
         command: ["python", "{{ $.Values.scripts.pdc }}"]
         env:
         - name: DB_HOST
-          value: "timescaledb-{{ .name }}-0.db-service-{{ .name }}" 
+          value: "timescaledb-{{ .name }}-rw"
         - name: PMU_IP
           value: "pmu-service-{{ .name }}"
 {{- end }}
