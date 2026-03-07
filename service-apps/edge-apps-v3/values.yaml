@@ -13,7 +13,7 @@ image:
   pullPolicy: "IfNotPresent"
 
 images:
-  timescaledb: "bitnami/timescaledb:16.4.0"  
+  timescaledb: "ghcr.io/cloudnative-pg/postgresql:16.4"  
 
 scripts:
   pdc: "TinyPDC.py" 
