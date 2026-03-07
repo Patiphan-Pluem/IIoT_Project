@@ -39,5 +39,5 @@ spec:
         command: ["python", "{{ $.Values.scripts.ems }}"]
         env:
         - name: DB_HOST
-          value: "timescaledb-{{ .name }}-0.db-service-{{ .name }}" 
+          value: "timescaledb-{{ .name }}-ro"
 {{- end }}
