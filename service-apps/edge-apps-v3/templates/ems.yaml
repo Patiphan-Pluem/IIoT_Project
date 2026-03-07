@@ -45,7 +45,7 @@ spec:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: timescaledb-edge-b-app
+              name: timescaledb-{{ .name }}-app
               key: password
         - name: DB_NAME
           value: "app" 
