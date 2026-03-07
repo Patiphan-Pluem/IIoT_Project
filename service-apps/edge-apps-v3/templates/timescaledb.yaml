@@ -47,8 +47,7 @@ spec:
         jobs: 2
 
   postgresql:
-    parameters:
-      shared_preload_libraries: "timescaledb"
+    parameters: {}
 
 ---
 apiVersion: v1
