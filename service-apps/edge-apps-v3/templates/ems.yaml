@@ -40,4 +40,13 @@ spec:
         env:
         - name: DB_HOST
           value: "timescaledb-{{ .name }}-ro"
+        - name: DB_USER
+          value: "app"  
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: timescaledb-edge-b-app
+              key: password
+        - name: DB_NAME
+          value: "app" 
 {{- end }}

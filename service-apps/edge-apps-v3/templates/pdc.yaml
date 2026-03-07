@@ -42,4 +42,13 @@ spec:
           value: "timescaledb-{{ .name }}-rw"
         - name: PMU_IP
           value: "pmu-service-{{ .name }}"
+        - name: DB_USER
+          value: "app"  
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: timescaledb-edge-b-app
+              key: password
+        - name: DB_NAME
+          value: "app" 
 {{- end }}
