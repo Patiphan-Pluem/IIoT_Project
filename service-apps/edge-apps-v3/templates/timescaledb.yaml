@@ -7,7 +7,7 @@ metadata:
   namespace: edge-apps
 spec:
   instances: 1
-  imageName: {{ $.Values.images.timescaledb }}
+  imageName: {{ $.Values.images.timescaledb | quote }}
 
   storage:
     size: 1Gi
@@ -21,13 +21,13 @@ spec:
           matchExpressions:
           - key: kubernetes.io/hostname
             operator: In
-            values: [ {{ .name  }} ]
+            values: [ {{ .name | quote }} ]
       - weight: 50
         preference:
           matchExpressions:
           - key: kubernetes.io/hostname
             operator: In
-            values: [ {{ $.Values.cloud_node_name }} ]
+            values: [ {{ $.Values.cloud_node_name | quote }} ]
 
   backup:
     barmanObjectStore:
@@ -41,9 +41,9 @@ spec:
           name: wal-g-creds
           key: secret-key
       wal:
-        compression: lz4
+        compression: gzip
       data:
-        compression: lz4
+        compression: gzip
         jobs: 2
 
   postgresql:
