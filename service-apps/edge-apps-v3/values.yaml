@@ -13,7 +13,7 @@ image:
   pullPolicy: "IfNotPresent"
 
 images:
-  timescaledb: "timescale/timescaledb:2.17.2-pg16"  
+  timescaledb: "timescale/timescaledb:16"  
 
 scripts:
   pdc: "TinyPDC.py" 
