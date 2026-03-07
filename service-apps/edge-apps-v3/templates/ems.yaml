@@ -41,12 +41,18 @@ spec:
         - name: DB_HOST
           value: "timescaledb-{{ .name }}-ro"
         - name: DB_USER
-          value: "app"  
-        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: timescaledb-{{ .name }}-app
+              key: username
+        - name: DB_PASS
           valueFrom:
             secretKeyRef:
               name: timescaledb-{{ .name }}-app
               key: password
         - name: DB_NAME
-          value: "app" 
+          valueFrom:
+            secretKeyRef:
+              name: timescaledb-{{ .name }}-app
+              key: dbname
 {{- end }}
