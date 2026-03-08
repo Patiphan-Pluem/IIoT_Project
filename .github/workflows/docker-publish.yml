@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./IIoT-devices/onepmu/PMU/OnOff          
-          file: ./IIoT-devices/onepmu/PMU/Baseline/Dockerfile  
+          file: ./IIoT-devices/onepmu/PMU/OnOff/Dockerfile  
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-onoff:v1
 
