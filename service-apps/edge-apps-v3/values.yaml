@@ -7,10 +7,10 @@ edges:
   # - name: edge-c
   #   pmu_ip: "192.168.177.140" 
 
-# image:
-#   repository: "ghcr.io/patiphan-pluem/iiot-project"
-#   tag: "v11"
-#   pullPolicy: "IfNotPresent"
+image:
+  repository: "ghcr.io/patiphan-pluem/iiot-project"
+  tag: "v11"
+  pullPolicy: "IfNotPresent"
 
 images:
   timescaledb: "ghcr.io/cloudnative-pg/postgresql:16.4"  
