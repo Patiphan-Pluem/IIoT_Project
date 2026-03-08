@@ -8,4 +8,4 @@ WORKDIR /app
 
 COPY onoff.py /app/
 
-CMD ["python3", "onoff.py"]
+CMD ["python3", "onoff.py"] 
