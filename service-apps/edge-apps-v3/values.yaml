@@ -1,7 +1,7 @@
 # values.yaml
 edges:
   # - name: edge-a
-  #   pmu_ip: "192.168.177.140" 
+  #   pmu_ip: "172.17.1.49" 
   - name: edge-b
     pmu_ip: "192.168.177.140" 
   # - name: edge-c
