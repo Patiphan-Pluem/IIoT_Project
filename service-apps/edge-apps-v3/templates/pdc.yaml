@@ -35,8 +35,8 @@ spec:
                 values: [ "{{ $.Values.cloud_node_name }}" ]
       containers:
       - name: pdc
-        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
-        command: ["python", "{{ $.Values.scripts.pdc }}"]
+        image: "patiphan11/pdc-onepmu:v1"
+        #command: ["python", "{{ $.Values.scripts.pdc }}"]
         env:
         - name: DB_HOST
           value: "timescaledb-{{ .name }}-rw"
