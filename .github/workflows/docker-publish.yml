@@ -1,0 +1,40 @@
+name: Build and Push PMU and PDC
+
+on:
+  push:
+    branches: [ "main" , "feat/iiot-setting"]
+    paths:
+      - 'IIoT-devices/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # --- ส่วนของ PDC for 1 PMU ---
+      - name: Build and push PDC
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices/onepmu      
+          file: ./IIoT-devices/onepmu/Dockerfile     
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pdc-onepmu:v1
+
+      # --- ส่วนของ PMU baseline ---
+      - name: Build and push PMU
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices/onepmu/PMU/Baseline          
+          file: ./IIoT-devices/onepmu/PMU/Baseline/Dockerfile  
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-baseline:v1
+
+      
