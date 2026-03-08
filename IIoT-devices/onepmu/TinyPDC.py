@@ -65,8 +65,26 @@ def receive_loop(pdc_ref):
         try:
             data = pdc_ref[0].get() 
             if isinstance(data, DataFrame):
-                with count_lock:
-                    msg_count += 1
+                raw = data.get_measurements()
+                ts = datetime.fromtimestamp(raw['time'])
+                
+                if 'measurements' in raw and len(raw['measurements']) > 0:
+                    stream = raw['measurements'][0]
+                    freq = stream.get('frequency', 0)
+                    phasors = stream.get('phasors', [])
+                    analogs = stream.get('analog', [])
+                    
+                    # แกะ Phasors 3 ชุด (VA, VB, VC)
+                    va_mag, va_ang = phasors[0] if len(phasors) >= 1 else (0, 0)
+                    vb_mag, vb_ang = phasors[1] if len(phasors) >= 2 else (0, 0)
+                    vc_mag, vc_ang = phasors[2] if len(phasors) >= 3 else (0, 0)
+                    
+                    # แกะ Analog
+                    ana1 = analogs[0] if len(analogs) >= 1 else 0
+                    with count_lock:
+                        batch_data.append((ts, freq, va_mag, va_ang, vb_mag, vb_ang, vc_mag, vc_ang, ana1))
+                        msg_count += 1
+                
         except Exception:
             break  
 
@@ -83,7 +101,7 @@ if __name__ == "__main__":
 
     try:
         while True:
-            time.sleep(0.1)
+            time.sleep(0.01)
             now = time.time()
 
             current_batch = []

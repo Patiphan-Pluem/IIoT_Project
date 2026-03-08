@@ -35,7 +35,7 @@ spec:
                 values: [ "{{ $.Values.cloud_node_name }}" ]
       containers:
       - name: pdc
-        image: "patiphan11/pdc-onepmu:v1"
+        image: "patiphan11/pdc-onepmu:v2"
         #command: ["python", "{{ $.Values.scripts.pdc }}"]
         env:
         - name: DB_HOST
