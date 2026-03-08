@@ -6,6 +6,6 @@ RUN pip install numpy synchrophasor psycopg2-binary
 
 WORKDIR /app
 
-COPY TinyPDC.py /app/
+COPY TinyPMU.py /app/
 
 CMD ["python3", "TinyPMU.py"]

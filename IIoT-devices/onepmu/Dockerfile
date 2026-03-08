@@ -8,4 +8,4 @@ WORKDIR /app
 
 COPY TinyPDC.py /app/
 
-CMD ["python3", "TinyPMU.py"]
+CMD ["python3", "TinyPDC.py"]
