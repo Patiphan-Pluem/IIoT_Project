@@ -116,8 +116,8 @@ if __name__ == "__main__":
                     cur = db_conn.cursor()
                     query = """
                         INSERT INTO pmu_measurements 
-                        (time, frequency, magnitude, angle, mag_b, ang_b, mag_c, ang_c)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        (time, frequency, magnitude, angle, mag_b, ang_b, mag_c, ang_c, analog1)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
                     cur.executemany(query, current_batch)
                     db_conn.commit()
