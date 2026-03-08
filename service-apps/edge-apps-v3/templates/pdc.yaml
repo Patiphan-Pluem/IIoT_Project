@@ -47,7 +47,7 @@ spec:
             secretKeyRef:
               name: timescaledb-{{ .name }}-app
               key: username
-        - name: DB_PASS
+        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: timescaledb-{{ .name }}-app
