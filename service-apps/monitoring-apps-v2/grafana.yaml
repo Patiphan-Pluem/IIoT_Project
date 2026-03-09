@@ -15,6 +15,8 @@ spec:
         adminPassword: "admin" 
         nodeSelector:
           node-role.kubernetes.io/control-plane: "true"
+        service:
+          type: NodePort
 
         # การเก็บข้อมูลถาวร (ดีกว่าการใช้ HostPath แบบเดิม)
         persistence:

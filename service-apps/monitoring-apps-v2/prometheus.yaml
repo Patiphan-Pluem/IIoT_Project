@@ -16,6 +16,8 @@ spec:
           type: Recreate # เหมาะสำหรับ Prometheus ที่มี 1 replica และใช้ storage
 
         server:
+          service:
+            type: NodePort
           persistentVolume:
             size: 10Gi  
           nodeSelector:
