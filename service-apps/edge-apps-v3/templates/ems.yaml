@@ -39,7 +39,7 @@ spec:
         command: ["python", "{{ $.Values.scripts.ems }}"]
         env:
         - name: SIM_MODE        
-              value: "loop"
+          value: "loop"
         - name: DB_HOST
           value: "timescaledb-{{ .name }}-rw"
         - name: DB_USER
