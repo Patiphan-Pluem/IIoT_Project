@@ -76,12 +76,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: db-service-{{ .name }}
+  name: db-service-{{ .name }}-rw
   namespace: edge-apps
 spec:
   selector:
+    {{- if $.Values.maintenance_mode }}
+    cnpg.io/cluster: timescaledb-cloud
+    {{- else }}
     cnpg.io/cluster: timescaledb-{{ .name }}
-    cnpg.io/podRole: instance
+    {{- end }}
   ports:
     - port: 5432
       targetPort: 5432

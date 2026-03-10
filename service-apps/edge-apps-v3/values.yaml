@@ -20,3 +20,5 @@ scripts:
   ems: "ems_simulator.py"
 
 cloud_node_name: "cloud-node"
+
+maintenance_mode: false

@@ -39,7 +39,7 @@ spec:
           compression: gzip
 
   replica:
-    enabled: true
+    enabled: false
     source: edge-b-source
 
   storage:
