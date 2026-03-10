@@ -1,0 +1,50 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: timescaledb-cloud
+  namespace: edge-apps
+  labels:
+    role: replica-cloud
+    managed-by: manual-recovery
+spec:
+  instances: 1
+  imageName: "ghcr.io/cloudnative-pg/postgresql:16.4"
+  bootstrap:
+    recovery:
+      source: edge-b-source
+
+  externalClusters:
+    - name: edge-b-source
+      barmanObjectStore:
+        destinationPath: s3://pmu-backup/edge-b/
+        endpointURL: http://minio.minio-system.svc.cluster.local:9000
+        s3Credentials:
+          accessKeyId:
+            name: wal-g-creds
+            key: access-key
+          secretAccessKey:
+            name: wal-g-creds
+            key: secret-key
+        wal:
+          compression: gzip
+
+  replica:
+    enabled: true
+    source: edge-b-source
+
+  storage:
+    size: 5Gi 
+    storageClass: local-path
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - "cloud-node"
+
+  postgresql:
+    parameters: {}
