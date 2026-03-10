@@ -23,7 +23,7 @@ cloud_node_name: "cloud-node"
 
 maintenance_mode: 
   edge-a: false
-  edge-b: false
+  edge-b: true
   # edge-c: false
   # edge-d: false
   
