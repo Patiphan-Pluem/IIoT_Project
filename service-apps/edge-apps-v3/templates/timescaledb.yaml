@@ -80,11 +80,12 @@ metadata:
   namespace: edge-apps
 spec:
   selector:
-    {{- if $.Values.maintenance_mode }}
+    {{- if index $.Values.maintenance_mode .name }}
     cnpg.io/cluster: timescaledb-cloud
     {{- else }}
     cnpg.io/cluster: timescaledb-{{ .name }}
     {{- end }}
+    cnpg.io/instanceRole: primary
   ports:
     - port: 5432
       targetPort: 5432

@@ -21,4 +21,9 @@ scripts:
 
 cloud_node_name: "cloud-node"
 
-maintenance_mode: false
+maintenance_mode: 
+  edge-a: false
+  edge-b: false
+  # edge-c: false
+  # edge-d: false
+  
