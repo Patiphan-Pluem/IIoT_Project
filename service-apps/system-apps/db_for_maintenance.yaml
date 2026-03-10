@@ -1,4 +1,13 @@
 apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: manual-backup-edge-b-01
+  namespace: edge-apps
+spec:
+  cluster:
+    name: timescaledb-edge-b
+---
+apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: timescaledb-cloud
