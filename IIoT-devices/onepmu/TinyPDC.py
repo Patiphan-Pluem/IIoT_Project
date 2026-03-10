@@ -66,7 +66,7 @@ def receive_loop(pdc_ref):
             data = pdc_ref[0].get() 
             if isinstance(data, DataFrame):
                 raw = data.get_measurements()
-                ts = datetime.fromtimestamp(raw['time'])
+                ts = datetime.now()
                 
                 if 'measurements' in raw and len(raw['measurements']) > 0:
                     stream = raw['measurements'][0]

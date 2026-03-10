@@ -26,7 +26,7 @@ jobs:
           context: ./IIoT-devices/onepmu      
           file: ./IIoT-devices/onepmu/Dockerfile     
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pdc-onepmu:v3
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pdc-onepmu:v4
 
       # --- ส่วนของ PMU baseline ---
       - name: Build and push PMU
