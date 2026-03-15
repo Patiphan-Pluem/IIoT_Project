@@ -64,5 +64,23 @@ jobs:
           file: ./IIoT-devices/onepmu/PMU/Ramp/Dockerfile  
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-ramp:v1
+      
+      # --- ส่วนของ 2 PMU OnOff4State ---
+      - name: Build and push PMU
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices/twopmu/OnOff4State       
+          file: ./IIoT-devices/twopmu/OnOff4State/Dockerfile  
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-onoff4state:v1
+
+      # --- ส่วนของ 2 PMU Spike ---
+      - name: Build and push PMU
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices/twopmu/Spike      
+          file: ./IIoT-devices/twopmu/Spike/Dockerfile  
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike:v1
 
       
