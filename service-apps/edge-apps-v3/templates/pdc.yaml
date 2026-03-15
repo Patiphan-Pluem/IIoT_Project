@@ -1,4 +1,5 @@
 {{- range .Values.edges }}
+{{- $edgeName := .name -}}
 ---
 # --- Deployment สำหรับ PDC ---
 apiVersion: apps/v1
@@ -32,7 +33,7 @@ spec:
               {{ if $index }},{{ end }}
               {
                 "label": {{ $pmu.label | quote }},
-                "service_name": "pmu-{{ $.name }}-{{ $pmu.label | lower }}",
+                "service_name": "pmu-{{ $edgeName }}-{{ $pmu.label | lower }}",
                 "port": {{ $pmu.port }},
                 "pdc_id": {{ $pmu.pdc_id }}
               }
