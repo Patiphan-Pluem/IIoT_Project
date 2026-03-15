@@ -6,10 +6,10 @@ edges:
         ip: "172.17.1.49"
         port: 1410
         pdc_id: 10
-      # - label: "PMU-A2"
-      #   ip: "172.17.1.49"
-      #   port: 1411
-      #   pdc_id: 11
+      - label: "PMU-A2"
+        ip: "172.17.1.49"
+        port: 1411
+        pdc_id: 11
   - name: edge-b
     pmus:
       - label: "PMU-B1"
