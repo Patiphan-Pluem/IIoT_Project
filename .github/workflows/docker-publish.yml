@@ -28,6 +28,15 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pdc-onepmu:v4
 
+      # --- ส่วนของ PDC for many PMUs ---
+      - name: Build and push PDC
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices    
+          file: ./IIoT-devices/Dockerfile    
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pdc-pmus:v1
+
       # --- ส่วนของ PMU baseline ---
       - name: Build and push PMU
         uses: docker/build-push-action@v5

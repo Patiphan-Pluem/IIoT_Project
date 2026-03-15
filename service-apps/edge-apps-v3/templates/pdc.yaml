@@ -22,13 +22,24 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
       containers:
       - name: pdc
-        image: "patiphan11/pdc-onepmu:v4"
+        image: "patiphan11/pdc-pmus:v1"
         #command: ["python", "{{ $.Values.scripts.pdc }}"]
         env:
+        - name: PMU_LIST
+          value: |
+            [
+              {{- range $index, $pmu := .pmus }}
+              {{ if $index }},{{ end }}
+              {
+                "label": {{ $pmu.label | quote }},
+                "service_name": "pmu-{{ $.name }}-{{ $pmu.label | lower }}",
+                "port": {{ $pmu.port }},
+                "pdc_id": {{ $pmu.pdc_id }}
+              }
+              {{- end }}
+            ]
         - name: DB_HOST
           value: "timescaledb-{{ .name }}-rw"
-        - name: PMU_IP
-          value: "pmu-service-{{ .name }}"
         - name: DB_USER
           valueFrom:
             secretKeyRef:

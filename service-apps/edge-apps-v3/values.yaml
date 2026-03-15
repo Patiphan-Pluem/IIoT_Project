@@ -1,11 +1,21 @@
 # values.yaml
 edges:
   - name: edge-a
-    pmu_ip: "172.17.1.49" 
+    pmus:
+      - label: "PMU-A1"
+        ip: "172.17.1.49"
+        port: 1410
+        pdc_id: 10
+      # - label: "PMU-A2"
+      #   ip: "172.17.1.49"
+      #   port: 1411
+      #   pdc_id: 11
   - name: edge-b
-    pmu_ip: "192.168.177.140" 
-  # - name: edge-c
-  #   pmu_ip: "192.168.177.140" 
+    pmus:
+      - label: "PMU-B1"
+        ip: "192.168.177.140"
+        port: 1410
+        pdc_id: 20
 
 image:
   repository: "ghcr.io/patiphan-pluem/iiot-project"
@@ -16,7 +26,7 @@ images:
   timescaledb: "ghcr.io/cloudnative-pg/postgresql:16.4"  
 
 scripts:
-  pdc: "TinyPDC.py" 
+  pdc: "TinyPDC2.py" 
   ems: "ems_simulator.py"
 
 cloud_node_name: "cloud-node"
