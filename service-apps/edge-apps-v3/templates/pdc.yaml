@@ -5,22 +5,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pdc-{{ .name }}
+  name: pdc-{{ $edgeName }}
   namespace: edge-apps
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: pdc
-      edge: {{ .name }}
+      edge: {{ $edgeName }}
   template:
     metadata:
       labels:
         app: pdc
-        edge: {{ .name }}
+        edge: {{ $edgeName }}
     spec:
       nodeSelector:
-        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode $edgeName }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ $edgeName | quote }}{{ end }}
       containers:
       - name: pdc
         image: "patiphan11/pdc-pmus:v1"
@@ -40,20 +40,20 @@ spec:
               {{- end }}
             ]
         - name: DB_HOST
-          value: "timescaledb-{{ .name }}-rw"
+          value: "timescaledb-{{ $edgeName }}-rw"
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: timescaledb-{{ .name }}-app
+              name: timescaledb-{{ $edgeName }}-app
               key: username
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: timescaledb-{{ .name }}-app
+              name: timescaledb-{{ $edgeName }}-app
               key: password
         - name: DB_NAME
           valueFrom:
             secretKeyRef:
-              name: timescaledb-{{ .name }}-app
+              name: timescaledb-{{ $edgeName }}-app
               key: dbname
 {{- end }}
