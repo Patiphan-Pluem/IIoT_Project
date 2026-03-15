@@ -16,6 +16,10 @@ edges:
         ip: "192.168.177.140"
         port: 1410
         pdc_id: 20
+      - label: "PMU-B2"
+        ip: "192.168.177.140"
+        port: 1411
+        pdc_id: 21
 
 image:
   repository: "ghcr.io/patiphan-pluem/iiot-project"
