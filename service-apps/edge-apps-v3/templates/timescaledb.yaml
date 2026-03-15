@@ -55,9 +55,11 @@ spec:
       data:
         compression: gzip
         jobs: 2
+      retentionPolicy: "1d"
 
   postgresql:
-    parameters: {}
+    parameters: 
+      archive_timeout: "300s"
 
 ---
 apiVersion: v1
