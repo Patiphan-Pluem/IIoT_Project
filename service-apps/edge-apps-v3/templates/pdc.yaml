@@ -56,4 +56,4 @@ spec:
             secretKeyRef:
               name: timescaledb-{{ $edgeName }}-app
               key: dbname
-{{- end }}
+{{ end }}
