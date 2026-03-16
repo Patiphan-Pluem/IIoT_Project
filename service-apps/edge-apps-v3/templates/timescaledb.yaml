@@ -13,24 +13,6 @@ spec:
     initdb:
       database: app
       owner: app
-      postInitSQL:
-        - |
-          CREATE TABLE IF NOT EXISTS pmu_measurements (
-              time TIMESTAMPTZ NOT NULL,
-              frequency DOUBLE PRECISION,
-              magnitude DOUBLE PRECISION, angle DOUBLE PRECISION,
-              mag_b DOUBLE PRECISION, ang_b DOUBLE PRECISION,
-              mag_c DOUBLE PRECISION, ang_c DOUBLE PRECISION
-          );
-          -- เพิ่ม Column เผื่อไว้กรณีต้องการความชัวร์
-          ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS mag_b DOUBLE PRECISION;
-          ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS ang_b DOUBLE PRECISION;
-          ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS mag_c DOUBLE PRECISION;
-          ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS ang_c DOUBLE PRECISION;
-          
-          -- หมายเหตุ: ถ้าใช้ Image Plain Postgres บรรทัด Hypertable ด้านล่างจะ Error 
-          -- แต่จะไม่ทำให้การสร้าง Table ด้านบนพังเพราะมันรันแยกบรรทัดกันใน postInitSQL
-          -- SELECT create_hypertable('pmu_measurements', 'time', if_not_exists => TRUE);
 
   storage:
     size: 1Gi
