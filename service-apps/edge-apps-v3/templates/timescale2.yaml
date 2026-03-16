@@ -30,24 +30,8 @@ spec:
       labels:
         app: timescaledb
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - cloud-node
-                - {{ .name }}
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100  
-            preference:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - {{ .name }}
+      nodeSelector:
+        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
       containers:
       - name: timescaledb
         image: timescale/timescaledb:latest-pg14
