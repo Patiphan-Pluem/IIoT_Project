@@ -1,0 +1,73 @@
+{{- range .Values.edges }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timescaledb-service-{{ .name }}
+  namespace: edge-apps
+spec:
+  clusterIP: None 
+  selector:
+    app: timescaledb
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: timescaledb-2-{{ .name }}
+  namespace: edge-apps
+spec:
+  serviceName: "timescaledb-service-{{ .name }}"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timescaledb
+  template:
+    metadata:
+      labels:
+        app: timescaledb
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - cloud-node
+                - edge-a
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100  
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - edge-a
+      containers:
+      - name: timescaledb
+        image: timescale/timescaledb:latest-pg14
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "password" 
+        - name: PGDATA 
+          value: "/var/lib/postgresql/data/pgdata"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/postgresql/data
+          
+  volumeClaimTemplates:
+  - metadata:
+      name: db-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 0.5Gi
+{{ end }}
