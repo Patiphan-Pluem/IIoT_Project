@@ -37,8 +37,6 @@ spec:
       data:
         compression: gzip
         jobs: 2
-      retentionPolicy: "1d"
-      
 
   postgresql:
     parameters: 
