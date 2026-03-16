@@ -8,7 +8,7 @@ metadata:
 spec:
   clusterIP: None 
   selector:
-    app: timescaledb
+    app: timescaledb-test
   ports:
     - protocol: TCP
       port: 5432
@@ -24,11 +24,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: timescaledb
+      app: timescaledb-test
   template:
     metadata:
       labels:
-        app: timescaledb
+        app: timescaledb-test
     spec:
       nodeSelector:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
