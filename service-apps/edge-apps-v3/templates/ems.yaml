@@ -28,7 +28,7 @@ spec:
         - name: SIM_MODE        
           value: "loop"
         - name: DB_HOST
-          value: "timescaledb-{{ .name }}-rw"
+          value: "timescaledb-{{ .name }}-entry"
         - name: DB_USER
           valueFrom:
             secretKeyRef:
