@@ -51,11 +51,12 @@ spec:
           name: wal-g-creds
           key: secret-key
       wal:
-        compression: gzip
+        compression: gzip]
+        retentionPolicy: "1d"
       data:
         compression: gzip
         jobs: 2
-      retentionPolicy: "1d"
+      
 
   postgresql:
     parameters: 
