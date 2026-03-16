@@ -52,10 +52,10 @@ spec:
           key: secret-key
       wal:
         compression: gzip
-        retentionPolicy: "1d"
       data:
         compression: gzip
         jobs: 2
+      retentionPolicy: "1d"
       
 
   postgresql:
