@@ -26,6 +26,8 @@ spec:
   bootstrap:
     recovery:
       source: src-{{ $edgeName }}
+      recoveryTarget:
+        targetTime: "{{ now | dateModify "-30m" | date "2006-01-02 15:04:05Z" }}"
 
   externalClusters:
     - name: src-{{ $edgeName }}
