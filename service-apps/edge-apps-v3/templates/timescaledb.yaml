@@ -45,12 +45,12 @@ spec:
         serverName: "maintenance-cloud-{{ .name }}"
         endpointURL: http://minio.minio-system.svc.cluster.local:9000
         s3Credentials:
-        accessKeyId:
-          name: wal-g-creds
-          key: access-key
-        secretAccessKey:
-          name: wal-g-creds
-          key: secret-key
+          accessKeyId:
+            name: wal-g-creds
+            key: access-key
+          secretAccessKey:
+            name: wal-g-creds
+            key: secret-key
           
   postgresql:
     parameters: 
