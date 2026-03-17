@@ -55,7 +55,6 @@ spec:
   postgresql:
     parameters: 
       archive_timeout: "300s"
-      restore_command: '/controller/manager wal-restore --log-destination /controller/log/postgres.json --cluster-name maintenance-source %f %p'
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
