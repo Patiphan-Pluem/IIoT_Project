@@ -24,7 +24,7 @@ def get_pmu_count():
     if not conn: return 0
     try:
         cur = conn.cursor()
-        cur.execute("SELECT count(*) FROM pmu_measurements WHERE time > NOW() - INTERVAL '10 seconds';")
+        cur.execute("SELECT count(*) FROM pmu_measurements WHERE time > NOW() - INTERVAL '60 seconds';")
         result = cur.fetchone()
         cur.close()
         conn.close()
