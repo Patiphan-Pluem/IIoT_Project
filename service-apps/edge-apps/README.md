@@ -1,3 +1,3 @@
 For Final Project
 Edge apps
-T
+Trigger
