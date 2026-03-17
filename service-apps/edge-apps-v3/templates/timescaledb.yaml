@@ -37,10 +37,25 @@ spec:
       data:
         compression: gzip
         jobs: 2
-
+    
+  externalClusters:
+    - name: maintenance-source
+      barmanObjectStore:
+        destinationPath: s3://pmu-backup/{{ .name }}/maintenance-data/
+        serverName: "maintenance-cloud-{{ .name }}"
+        endpointURL: http://minio.minio-system.svc.cluster.local:9000
+        s3Credentials:
+        accessKeyId:
+          name: wal-g-creds
+          key: access-key
+        secretAccessKey:
+          name: wal-g-creds
+          key: secret-key
+          
   postgresql:
     parameters: 
       archive_timeout: "300s"
+      restore_command: '/controller/manager wal-restore --log-destination /controller/log/postgres.json --cluster-name maintenance-source %f %p'
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup

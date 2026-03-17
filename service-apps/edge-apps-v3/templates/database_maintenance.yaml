@@ -44,6 +44,21 @@ spec:
             key: secret-key
         wal:
           compression: gzip
+    
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://pmu-backup/{{ $edgeName }}/maintenance-data/
+      serverName: "maintenance-cloud-{{ $edgeName }}"
+      endpointURL: http://minio.minio-system.svc.cluster.local:9000
+      s3Credentials:
+        accessKeyId:
+          name: wal-g-creds
+          key: access-key
+        secretAccessKey:
+          name: wal-g-creds
+          key: secret-key
+      wal:
+        compression: gzip
 
   replica:
     enabled: false
