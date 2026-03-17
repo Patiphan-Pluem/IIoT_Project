@@ -1,32 +1,37 @@
+{{- range .Values.edges }}
+{{- $edgeName := .name }}
+{{- if index $.Values.maintenance_mode $edgeName }}
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Backup
 metadata:
-  name: manual-backup-edge-b-01
+  name: manual-backup-{{ $edgeName }}-{{ now | unixEpoch }}
   namespace: edge-apps
 spec:
   cluster:
-    name: timescaledb-edge-b
+    name: timescaledb-{{ $edgeName }}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: timescaledb-cloud
+  name: timescaledb-maintenance-{{ $edgeName }}
   namespace: edge-apps
   labels:
-    role: replica-cloud
-    managed-by: manual-recovery
+    role: maintenance-db
+    edge-origin: {{ $edgeName }}
 spec:
   instances: 1
-  imageName: "ghcr.io/cloudnative-pg/postgresql:16.4"
+  imageName: {{ $.Values.images.timescaledb | quote }}
+
   bootstrap:
     recovery:
-      source: edge-b-source
+      source: src-{{ $edgeName }}
 
   externalClusters:
-    - name: edge-b-source
+    - name: src-{{ $edgeName }}
       barmanObjectStore:
-        destinationPath: s3://pmu-backup/edge-b/
-        serverName: "timescaledb-edge-b"
+        destinationPath: s3://pmu-backup/{{ $edgeName }}/
+        serverName: "timescaledb-{{ $edgeName }}"
         endpointURL: http://minio.minio-system.svc.cluster.local:9000
         s3Credentials:
           accessKeyId:
@@ -40,7 +45,7 @@ spec:
 
   replica:
     enabled: false
-    source: edge-b-source
+    source: src-{{ $edgeName }}
 
   storage:
     size: 5Gi 
@@ -54,7 +59,10 @@ spec:
           - key: kubernetes.io/hostname
             operator: In
             values:
-            - "cloud-node"
+            - {{ $.Values.cloud_node_name | quote }}
 
   postgresql:
-    parameters: {}
+    parameters: 
+      archive_timeout: "300s"
+{{- end }}
+{{- end }}
