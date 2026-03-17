@@ -23,7 +23,7 @@ edges:
 
 image:
   repository: "ghcr.io/patiphan-pluem/iiot-project"
-  tag: "v12"
+  tag: "v13"
   pullPolicy: "IfNotPresent"
 
 images:

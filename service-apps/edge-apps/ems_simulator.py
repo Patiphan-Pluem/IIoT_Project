@@ -72,7 +72,7 @@ while True:
         else:
             print(f"[{datetime.now().strftime('%H:%M:%S')}] No new PMU data. Waiting...")
         
-        time.sleep(10)
+        time.sleep(60)
 
     except Exception as e:
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Error: {e}")
