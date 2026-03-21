@@ -27,6 +27,10 @@ spec:
             size: 10Gi  
           nodeSelector:
             node-role.kubernetes.io/control-plane: "true" 
+
+          global:
+            scrape_interval: 1s
+            scrape_timeout: 1s
           
           # คอนฟิกให้ Prometheus มองเห็น cAdvisor ที่แฝงอยู่ใน Kubelet ของ K3s
           extraScrapeConfigs: |
