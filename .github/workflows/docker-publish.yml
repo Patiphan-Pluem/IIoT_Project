@@ -90,6 +90,6 @@ jobs:
           context: ./IIoT-devices/threepmu/Spike      
           file: ./IIoT-devices/threepmu/Spike/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike-3pmus:v1
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike-3pmus:v2
 
       
