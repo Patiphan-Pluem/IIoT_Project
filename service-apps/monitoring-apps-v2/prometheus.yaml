@@ -15,6 +15,11 @@ spec:
         deploymentStrategy:
           type: Recreate # เหมาะสำหรับ Prometheus ที่มี 1 replica และใช้ storage
 
+        global:
+          scrape_interval: 1s     
+          scrape_timeout: 1s      
+          evaluation_interval: 1s
+
         server:
           service:
             type: NodePort
