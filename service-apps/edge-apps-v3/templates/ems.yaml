@@ -7,7 +7,7 @@ metadata:
   name: ems-{{ .name }}
   namespace: edge-apps
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ems
