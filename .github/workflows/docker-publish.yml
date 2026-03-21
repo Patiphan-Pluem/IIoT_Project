@@ -2,7 +2,7 @@ name: Build and Push PMU and PDC
 
 on:
   push:
-    branches: [ "main" , "feat/iiot-setting"]
+    branches: [ "main" , "feat/iiot-setting", "feat/database-test"]
     paths:
       - 'IIoT-devices/**'
 
@@ -82,5 +82,14 @@ jobs:
           file: ./IIoT-devices/twopmu/Spike/Dockerfile  
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike:v1
+
+      # --- ส่วนของ 3 PMU Spike ---
+      - name: Build and push PMU
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices/threepmu/Spike      
+          file: ./IIoT-devices/threepmu/Spike/Dockerfile  
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike-3pmus:v1
 
       
