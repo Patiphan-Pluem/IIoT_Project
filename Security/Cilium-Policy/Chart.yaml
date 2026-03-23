@@ -1,0 +1,6 @@
+apiVersion: v2
+name: iiot-edge-apps
+description: Universal Helm Chart for IIoT Edge-Cloud Testbed
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

@@ -1,0 +1,52 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: pdc-secure-policy
+  namespace: edge-apps
+spec:
+  endpointSelector:
+    matchLabels:
+      app: pdc 
+  
+  ingress:
+    - fromEntities:
+        - host 
+        - remote-node 
+      toPorts:
+        - ports:
+            - port: "8080" 
+              protocol: TCP
+
+  egress:
+    {{- range .Values.edges }}
+    - toCIDR:
+        {{- range .pmus }}
+        - {{ .ip }}/32 
+        {{- end }}
+      toPorts:
+        - ports:
+          {{- range .pmus }}
+          - port: {{ .port | quote }}
+            protocol: TCP
+          {{- end }}
+    {{- end }}
+
+    - toEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: timescaledb-{{ .name }}
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
