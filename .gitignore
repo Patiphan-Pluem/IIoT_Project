@@ -6,3 +6,6 @@
 *.tfstate
 *.tfstate.backup
 .terraform.lock.hcl
+
+#ignore gitignore
+.gitignore
