@@ -1,27 +1,28 @@
+{{- range .Values.edges }}
+---
 apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
-  name: pdc-secure-policy
-  namespace: edge-apps
+  name: pdc-policy-{{ .name }}
+  namespace: {{ $.Values.security.namespace }}
 spec:
   endpointSelector:
     matchLabels:
-      app: pdc 
+      app: pdc
+      edge: {{ .name | quote }}
   
   ingress:
     - fromEntities:
-        - host 
-        - remote-node 
+        - host
       toPorts:
         - ports:
-            - port: "8080" 
+            - port: {{ $.Values.security.healthCheckPort | quote }}
               protocol: TCP
 
   egress:
-    {{- range .Values.edges }}
     - toCIDR:
         {{- range .pmus }}
-        - {{ .ip }}/32 
+        - {{ .ip }}/32
         {{- end }}
       toPorts:
         - ports:
@@ -29,11 +30,14 @@ spec:
           - port: {{ .port | quote }}
             protocol: TCP
           {{- end }}
-    {{- end }}
 
     - toEndpoints:
         - matchLabels:
+            {{- if index $.Values.maintenance_mode .name }}
+            cnpg.io/cluster: {{ $.Values.cloud_db_cluster_name }}
+            {{- else }}
             cnpg.io/cluster: timescaledb-{{ .name }}
+            {{- end }}
       toPorts:
         - ports:
             - port: "5432"
@@ -50,3 +54,4 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
+{{- end }}
