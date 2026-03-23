@@ -4,7 +4,6 @@ security:
   namespace: edge-apps
   healthCheckPort: 8080 
 
-# ดึงโครงสร้างมาจากโปรเจกต์ IIoT ของคุณ เพื่อสร้าง Dynamic Policy
 edges:
   - name: edge-a
     pmus:
@@ -21,7 +20,6 @@ edges:
       - ip: "192.168.177.140"
         port: 1411
 
-# สถานะการซ่อมบำรุง เพื่อใช้ตัดสินใจว่าจะเปิด Network ให้คุยกับ Cloud DB หรือไม่
 maintenance_mode: 
   edge-a: false
   edge-b: false
