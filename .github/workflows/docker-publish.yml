@@ -3,9 +3,8 @@ name: Build and Push PMU and PDC
 on:
   push:
     branches: [ "main" , "feat/iiot-setting", "feat/database-test", "feat/security-test"]
-    # paths:
-    #   - 'IIoT-devices/**'
-    #   - 'system-apps/**'
+    paths:
+      - 'IIoT-devices/**'
 
 jobs:
   build-and-push:
@@ -92,13 +91,4 @@ jobs:
           file: ./IIoT-devices/threepmu/Spike/Dockerfile  
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike-3pmus:v2
-
-      # --- ส่วนของ Ingestor ---
-      - name: Build and push Ingestor
-        uses: docker/build-push-action@v5
-        with:
-          context: ./system-apps/Ingestor    
-          file: ./system-apps/Ingestor/Dockerfile  
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ingestor:v1
       
