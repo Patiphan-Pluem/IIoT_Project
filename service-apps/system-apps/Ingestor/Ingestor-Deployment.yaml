@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ingestor
-        image: akkaraphont/autoscale-ingestor:v5.2
+        image: akkaraphont/autoscale-ingestor:v5.3
         imagePullPolicy: IfNotPresent
 
         envFrom:
