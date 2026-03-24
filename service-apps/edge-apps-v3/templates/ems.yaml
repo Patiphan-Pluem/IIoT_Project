@@ -23,7 +23,6 @@ spec:
       containers:
       - name: ems
         image: "plubpo/ems-app:v2"
-        command: ["python", "{{ $.Values.scripts.ems }}"]
         env:
         - name: SIM_MODE        
           value: "loop"
