@@ -24,7 +24,7 @@ data:
         mem_avg DOUBLE PRECISION,
         mem_max DOUBLE PRECISION,
 
-        rps DOUBLE PRECISION,
+        pps_rx DOUBLE PRECISION,
 
         replicas INT,
         
