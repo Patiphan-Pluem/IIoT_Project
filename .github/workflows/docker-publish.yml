@@ -3,9 +3,9 @@ name: Build and Push PMU and PDC
 on:
   push:
     branches: [ "main" , "feat/iiot-setting", "feat/database-test", "feat/security-test"]
-    paths:
-      - 'IIoT-devices/**'
-      - 'system-apps/**'
+    # paths:
+    #   - 'IIoT-devices/**'
+    #   - 'system-apps/**'
 
 jobs:
   build-and-push:
