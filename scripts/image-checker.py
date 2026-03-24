@@ -20,7 +20,7 @@ def get_images_from_yaml(directory):
 def check_image_existence(image):
     full_path = f"docker://{image}" if "://" not in image else image
     try:
-        subprocess.run(["skopeo", "inspect", full_path], 
+        subprocess.run(["skopeo", "inspect", "--raw", full_path], 
                        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, check=True)
         return True, "✅ Accessible"
     except subprocess.CalledProcessError as e:
