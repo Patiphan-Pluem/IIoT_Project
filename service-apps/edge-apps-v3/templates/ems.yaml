@@ -27,7 +27,7 @@ spec:
         - name: SIM_MODE        
           value: "loop"
         - name: MANUAL_DATA_COUNT
-          value: "0"
+          value: "700"
         - name: DIVIDER_VALUE
           value: "1"
         - name: DB_HOST
