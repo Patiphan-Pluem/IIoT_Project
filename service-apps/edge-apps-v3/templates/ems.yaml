@@ -25,7 +25,7 @@ spec:
         image: "plubpo/ems-app:v2"
         env:
         - name: SIM_MODE        
-          value: "loop"
+          value: "matrix"
         - name: MANUAL_DATA_COUNT
           value: "700"
         - name: DIVIDER_VALUE
