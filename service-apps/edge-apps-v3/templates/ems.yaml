@@ -27,9 +27,9 @@ spec:
         - name: SIM_MODE        
           value: "loop"
         - name: MANUAL_DATA_COUNT
-          value: "350"
+          value: "0"
         - name: DIVIDER_VALUE
-          value: "1"
+          value: "5"
         - name: DB_HOST
           value: "timescaledb-{{ .name }}-entry"
         - name: DB_USER
