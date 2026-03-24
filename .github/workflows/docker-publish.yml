@@ -94,10 +94,10 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike-3pmus:v2
 
       # --- ส่วนของ Ingestor ---
-      - name: Build and push PMU
+      - name: Build and push Ingestor
         uses: docker/build-push-action@v5
         with:
-          context: ./system-apps/Ingestor/     
+          context: ./system-apps/Ingestor    
           file: ./system-apps/Ingestor/Dockerfile  
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ingestor:v1
