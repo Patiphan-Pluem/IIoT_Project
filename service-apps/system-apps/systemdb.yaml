@@ -1,0 +1,136 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cloud-db
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: systemdb-init
+  namespace: cloud-db
+data:
+  01-init-schema.sql: |
+    CREATE EXTENSION IF NOT EXISTS timescaledb;
+
+    CREATE TABLE autoscale_features (
+
+        time TIMESTAMPTZ NOT NULL,
+        deployment TEXT NOT NULL,
+        
+        cpu_avg DOUBLE PRECISION,
+        cpu_max DOUBLE PRECISION,
+
+        mem_avg DOUBLE PRECISION,
+        mem_max DOUBLE PRECISION,
+
+        rps DOUBLE PRECISION,
+
+        replicas INT,
+        
+        PRIMARY KEY (time, deployment)
+    );
+
+    SELECT create_hypertable('autoscale_features', 'time');
+
+    CREATE INDEX ON autoscale_features (deployment, time DESC);
+    
+    SELECT add_retention_policy('autoscale_features', INTERVAL '30 days');
+    
+    ALTER TABLE autoscale_features SET (
+        timescaledb.compress,
+        timescaledb.compress_segmentby = 'deployment'
+    );
+
+    SELECT add_compression_policy('autoscale_features', INTERVAL '7 days');
+
+
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: systemdb-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/home/akkaraphon/systemdb-data"
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: systemdb
+  namespace: cloud-db
+spec:
+  serviceName: systemdb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: systemdb
+
+  template:
+    metadata:
+      labels:
+        app: systemdb
+
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: cloud-node
+
+      containers:
+      - name: systemdb
+        image: timescale/timescaledb:latest-pg14
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - containerPort: 5432
+
+        env:
+        - name: POSTGRES_USER
+          value: admin
+        - name: POSTGRES_PASSWORD
+          value: admin123
+        - name: POSTGRES_DB
+          value: autoscale-db
+
+        volumeMounts:
+        - name: systemdb-storage
+          mountPath: /var/lib/postgresql/data
+
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d
+          readOnly: true
+
+      volumes:
+      - name: init-script
+        configMap:
+          name: systemdb-init
+          defaultMode: 0755
+
+  volumeClaimTemplates:
+  - metadata:
+      name: systemdb-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: systemdb
+  namespace: cloud-db
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 30086
+  selector:
+    app: systemdb
