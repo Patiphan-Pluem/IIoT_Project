@@ -5,6 +5,7 @@ on:
     branches: [ "main" , "feat/iiot-setting", "feat/database-test", "feat/security-test"]
     paths:
       - 'IIoT-devices/**'
+      - 'system-apps/**'
 
 jobs:
   build-and-push:
