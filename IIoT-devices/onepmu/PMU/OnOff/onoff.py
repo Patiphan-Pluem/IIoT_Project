@@ -9,7 +9,7 @@ if __name__ == "__main__":
     pmu.logger.setLevel("INFO")
 
     freq = 50
-    base_rate = 25
+    base_rate = 120
     dt = 1.0 / base_rate
 
     cfg = ConfigFrame2(
@@ -31,9 +31,9 @@ if __name__ == "__main__":
     pmu.set_header("On-Off-PMU")
     pmu.run()
 
-    lambda_on  = 0.1    # mean 10 s
-    lambda_off = 0.1    # mean 10 s
-    MIN_ON     = 8      # on atleast 8 s 
+    lambda_on  = 0.05    # mean 10 s
+    lambda_off = 0.1   # mean 10 s
+    MIN_ON     = 20      # on atleast 8 s 
     MIN_OFF    = 5      # off atlest 5 s 
 
     current_state = "ON"

@@ -5,10 +5,10 @@ from synchrophasor.pmu import Pmu
 
 # config
 PQM_PORT      = 1411
-SPIKE_RATE    = 50      
+SPIKE_RATE    = 200      
 LAMBDA_ARRIVE = 0.05    # mean inter-spike 20 s 
-SPIKE_DUR_MIN = 1.0  
-SPIKE_DUR_MAX = 3.0    
+SPIKE_DUR_MIN = 2.0  
+SPIKE_DUR_MAX = 4.0    
 
 
 BUSYWAIT_THRESHOLD = 0.002

@@ -27,7 +27,7 @@ if __name__ == "__main__":
     pmu.run()
 
     start_rate = 25
-    end_rate   = 50   
+    end_rate   = 400   
 
     def precise_sleep_until(target):
         remaining = target - time.time()
@@ -53,9 +53,9 @@ if __name__ == "__main__":
                 was_connected = True
 
             # random hold
-            hold_low_sec  = random.uniform(10, 30)   # hold at 20 mps
-            ramp_sec      = random.uniform(15, 45)   # ramp 20 to 50
-            hold_high_sec = random.uniform(20, 60)   # hold ทat 50 mps
+            hold_low_sec  = random.uniform(60, 80)   # hold at 20 mps
+            ramp_sec      = random.uniform(110, 130)   # ramp 20 to 50
+            hold_high_sec = random.uniform(70, 90)   # hold ทat 50 mps
 
             total = hold_low_sec + ramp_sec + hold_high_sec
             print(f"[PMU] New cycle: hold_low={hold_low_sec:.1f}s  ramp={ramp_sec:.1f}s  hold_high={hold_high_sec:.1f}s  (total={total:.1f}s)", flush=True)

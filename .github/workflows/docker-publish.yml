@@ -53,7 +53,7 @@ jobs:
           context: ./IIoT-devices/onepmu/PMU/OnOff          
           file: ./IIoT-devices/onepmu/PMU/OnOff/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-onoff:v1
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-onoff:v2 #ล่าสุดเลย v2
 
 
       # --- ส่วนของ PMU Ramp ---
@@ -63,7 +63,7 @@ jobs:
           context: ./IIoT-devices/onepmu/PMU/Ramp         
           file: ./IIoT-devices/onepmu/PMU/Ramp/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-ramp:v1
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-ramp:v2 #ล่าสุด v2
       
       # --- ส่วนของ 2 PMU OnOff4State ---
       - name: Build and push PMU
@@ -81,7 +81,7 @@ jobs:
           context: ./IIoT-devices/twopmu/Spike      
           file: ./IIoT-devices/twopmu/Spike/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike:v1
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike:v2 # ล่าสุดเลย v2
 
       # --- ส่วนของ 3 PMU Spike ---
       - name: Build and push PMU
