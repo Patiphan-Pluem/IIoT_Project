@@ -22,11 +22,11 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
       containers:
       - name: ems
-        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+        image: "plubpo/ems-app:v1"
         command: ["python", "{{ $.Values.scripts.ems }}"]
         env:
         - name: SIM_MODE        
-          value: "matrix"
+          value: "loop"
         - name: DB_HOST
           value: "timescaledb-{{ .name }}-entry"
         - name: DB_USER
