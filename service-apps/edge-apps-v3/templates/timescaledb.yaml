@@ -63,17 +63,6 @@ spec:
     parameters: 
       archive_timeout: "300s"
 ---
-apiVersion: postgresql.cnpg.io/v1
-kind: ScheduledBackup
-metadata:
-  name: timescaledb-{{ .name }}-daily-backup
-  namespace: edge-apps
-spec:
-  schedule: "0 0 * * *" 
-  backupOwnerReference: self
-  cluster:
-    name: timescaledb-{{ .name }}
----
 apiVersion: v1
 kind: Service
 metadata:
