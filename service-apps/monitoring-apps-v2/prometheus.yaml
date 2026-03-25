@@ -15,6 +15,9 @@ spec:
         deploymentStrategy:
           type: Recreate # เหมาะสำหรับ Prometheus ที่มี 1 replica และใช้ storage
 
+        configmapReload:
+            enabled: true
+            
         server:
           service:
             type: NodePort
