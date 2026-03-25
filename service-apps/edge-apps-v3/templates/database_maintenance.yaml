@@ -26,8 +26,9 @@ spec:
   bootstrap:
     recovery:
       source: src-{{ $edgeName }}
-      {% comment %} recoveryTarget:
-        targetTime: "{{ now | dateModify "-30m" | date "2006-01-02 15:04:05" }}"  {% endcomment %}
+      backupID: "20260325T100001"
+      #recoveryTarget:
+        #targetTime: "{{ now | dateModify "-30m" | date "2006-01-02 15:04:05" }}" 
 
   externalClusters:
     - name: src-{{ $edgeName }}
