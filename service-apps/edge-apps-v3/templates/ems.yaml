@@ -47,6 +47,13 @@ spec:
             secretKeyRef:
               name: timescaledb-{{ .name }}-app
               key: dbname
+        
+        resizePolicy:
+        - resourceName: cpu
+          restartPolicy: NotRequired
+        - resourceName: memory
+          restartPolicy: NotRequired
+        
         resources:
             requests:
               cpu: "100m"

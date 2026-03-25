@@ -1,0 +1,26 @@
+{{- range .Values.edges }}
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: ems-vpa-{{ .name }}
+  namespace: edge-apps
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: ems-{{ .name }}
+  updatePolicy:
+    updateMode: "Auto"  
+  resourcePolicy:
+    containerPolicies:
+      - containerName: 'ems'
+        minAllowed:
+          cpu: "50m"
+          memory: "32Mi"
+        maxAllowed:
+          cpu: "800m"
+          memory: "1Gi"
+        controlledResources: ["cpu", "memory"]
+        controlledValues: RequestsAndLimits
+{{- end }}
