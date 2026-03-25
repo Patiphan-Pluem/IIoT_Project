@@ -26,10 +26,8 @@ spec:
   bootstrap:
     recovery:
       source: src-{{ $edgeName }}
-      backupID: "20260325T100001"
-      recoveryTarget:
-        targetTime: "{{ now | dateModify "-150m" | date "2006-01-02 15:04:05" }}" 
-        targetInclusive: true
+      #recoveryTarget:
+        #targetTime: "{{ now | dateModify "-150m" | date "2006-01-02 15:04:05" }}" 
 
   externalClusters:
     - name: src-{{ $edgeName }}
