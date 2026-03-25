@@ -11,16 +11,16 @@ spec:
     kind: Deployment
     name: ems-{{ .name }}
   updatePolicy:
-    updateMode: "Auto"  
-  resourcePolicy:
-    containerPolicies:
-      - containerName: 'ems'
-        minAllowed:
-          cpu: "50m"
-          memory: "32Mi"
-        maxAllowed:
-          cpu: "800m"
-          memory: "1Gi"
-        controlledResources: ["cpu", "memory"]
-        controlledValues: RequestsAndLimits
+    updateMode: "Auto"  # สั่งให้ปรับค่าโดยอัตโนมัติ
+  #resourcePolicy:
+    #containerPolicies:
+      #- containerName: 'ems'
+        #minAllowed:
+          #cpu: "50m"
+          #memory: "32Mi"
+        #maxAllowed:
+          #cpu: "800m"
+          #memory: "1Gi"
+        #controlledResources: ["cpu", "memory"]
+        #controlledValues: RequestsAndLimits
 {{- end }}
