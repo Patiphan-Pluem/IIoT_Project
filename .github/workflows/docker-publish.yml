@@ -2,7 +2,7 @@ name: Build and Push PMU and PDC
 
 on:
   push:
-    branches: [ "main" , "feat/iiot-setting", "feat/database-test", "feat/security-test"]
+    branches: [ "main" , "feat/iiot-setting", "feat/database-test", "feat/security-test", "feat/KubeRay-testing"]
     paths:
       - 'IIoT-devices/**'
 
@@ -91,4 +91,13 @@ jobs:
           file: ./IIoT-devices/threepmu/Spike/Dockerfile  
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-spike-3pmus:v2
+
+      # --- ส่วนของ EMS ---
+      - name: Build and push EMS
+        uses: docker/build-push-action@v5
+        with:
+          context: ./service-apps/edge-apps-v3/APP     
+          file: ./service-apps/edge-apps-v3/APP/Dockerfile  
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ems:v1
       

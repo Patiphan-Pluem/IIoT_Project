@@ -1,56 +1,78 @@
 {{- range .Values.edges }}
 ---
-# --- Deployment สำหรับ EMS ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: ray.io/v1
+kind: RayCluster
 metadata:
   name: ems-{{ .name }}
   namespace: edge-apps
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ems
-      edge: {{ .name }}
-  template:
-    metadata:
-      labels:
-        app: ems
-        edge: {{ .name }}
-    spec:
-      nodeSelector:
-        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
-      containers:
-      - name: ems
-        image: "plubpo/ems-app:v3"
-        env:
-        - name: SIM_MODE        
-          value: "loop"
-        - name: MANUAL_DATA_COUNT
-          value: "0"
-        - name: DIVIDER_VALUE
-          value: "5"
-        - name: DB_HOST
-          value: "timescaledb-{{ .name }}-entry"
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: timescaledb-{{ .name }}-app
-              key: username
-        - name: DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: timescaledb-{{ .name }}-app
-              key: password
-        - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: timescaledb-{{ .name }}-app
-              key: dbname
-        resources:
+  rayVersion: '2.9.0'
+  headGroupSpec:
+    rayStartParams:
+      dashboard-host: '0.0.0.0'
+    template:
+      spec:
+        nodeSelector:
+          kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+        containers:
+        - name: ray-head
+          image: "plubpo/ems-app:v3"
+          ports:
+          - containerPort: 6379
+            name: gcs
+          - containerPort: 8265
+            name: dashboard
+          - containerPort: 10001
+            name: client
+          env:
+          - name: SIM_MODE        
+            value: "loop"
+          - name: MANUAL_DATA_COUNT
+            value: "0"
+          - name: DIVIDER_VALUE
+            value: "5"
+          - name: DB_HOST
+            value: "timescaledb-{{ .name }}-entry"
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: timescaledb-{{ .name }}-app
+                key: username
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: timescaledb-{{ .name }}-app
+                key: password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: timescaledb-{{ .name }}-app
+                key: dbname
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+  # --- Worker Group: ตัวช่วยประมวลผลที่จะงอกตาม HPA ---
+  workerGroupSpecs:
+  - replicas: 1
+    minReplicas: 0
+    maxReplicas: 10
+    groupName: compute-pool
+    template:
+      spec:
+        nodeSelector:
+          kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+        containers:
+        - name: ray-worker
+          image: "plubpo/ems-app:v3"
+          resources:
             requests:
               cpu: "100m"
-              memory: "64Mi"
+              memory: "128Mi"
             limits:
               cpu: "500m"
               memory: "512Mi"
