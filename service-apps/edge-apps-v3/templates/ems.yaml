@@ -20,9 +20,13 @@ spec:
           readinessProbe:
             initialDelaySeconds: 45  
             periodSeconds: 10
+            exec: 
+              command: ["/bin/bash", "-c", "wget -q -O- http://localhost:8265/healthz"]
           livenessProbe:
             initialDelaySeconds: 90  
             periodSeconds: 15
+            exec: 
+              command: ["/bin/bash", "-c", "wget -q -O- http://localhost:8265/healthz"]
           ports:
           - containerPort: 6379
             name: gcs
