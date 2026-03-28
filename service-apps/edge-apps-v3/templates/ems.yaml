@@ -17,6 +17,12 @@ spec:
         containers:
         - name: ray-head
           image: "patiphan11/ems:v2"
+          readinessProbe:
+            initialDelaySeconds: 45  
+            periodSeconds: 10
+          livenessProbe:
+            initialDelaySeconds: 90  
+            periodSeconds: 15
           ports:
           - containerPort: 6379
             name: gcs
