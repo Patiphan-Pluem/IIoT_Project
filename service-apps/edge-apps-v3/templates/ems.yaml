@@ -16,7 +16,7 @@ spec:
           kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
         containers:
         - name: ray-head
-          image: "patiphan11/ems:v1"
+          image: "patiphan11/ems:v2"
           ports:
           - containerPort: 6379
             name: gcs
@@ -69,7 +69,7 @@ spec:
           kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
         containers:
         - name: ray-worker
-          image: "patiphan11/ems:v1"
+          image: "patiphan11/ems:v2"
           resources:
             requests:
               cpu: "100m"
