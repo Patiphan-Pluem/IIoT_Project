@@ -7,6 +7,7 @@ metadata:
   namespace: edge-apps
 spec:
   rayVersion: '2.9.0'
+  enableInTreeAutoscaling: true
   headGroupSpec:
     rayStartParams:
       include-dashboard: 'false'
