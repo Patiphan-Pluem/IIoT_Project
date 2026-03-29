@@ -87,11 +87,11 @@ spec:
           image: "patiphan11/ems:v2"
           readinessProbe:
             exec:
-              command: ["/bin/true"] 
+              command: ["/bin/bash", "-c", "wget -q -O- http://localhost:6379/healthz"]
             initialDelaySeconds: 5
           livenessProbe:
             exec:
-              command: ["/bin/true"] 
+              command: ["/bin/bash", "-c", "wget -q -O- http://localhost:6379/healthz"]
             initialDelaySeconds: 5
           resources:
             requests:
