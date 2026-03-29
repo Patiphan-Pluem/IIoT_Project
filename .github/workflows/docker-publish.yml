@@ -2,7 +2,7 @@ name: Build and Push PMU and PDC
 
 on:
   push:
-    branches: [ "main" , "feat/iiot-setting", "feat/database-test", "feat/security-test"]
+    branches: [ "main" , "feat/iiot-setting", "feat/database-test", "feat/security-test", "feat/KubeRay-testing"]
     paths:
       - 'service-apps/**'
 
@@ -99,5 +99,5 @@ jobs:
           context: ./service-apps/edge-apps-v3/APP     
           file: ./service-apps/edge-apps-v3/APP/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ems:v2
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ems:v3
       
