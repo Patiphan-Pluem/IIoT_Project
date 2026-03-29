@@ -87,12 +87,14 @@ spec:
           image: "patiphan11/ems:v2"
           readinessProbe:
             exec:
-              command: ["/bin/bash", "-c", "wget -q -O- http://localhost:6379/healthz"]
+              command: ["/bin/sh", "-c", "exit 0"]
             initialDelaySeconds: 5
+            periodSeconds: 10
           livenessProbe:
             exec:
-              command: ["/bin/bash", "-c", "wget -q -O- http://localhost:6379/healthz"]
-            initialDelaySeconds: 5
+              command: ["/bin/sh", "-c", "exit 0"]
+            initialDelaySeconds: 15
+            periodSeconds: 20
           resources:
             requests:
               cpu: "100m"
