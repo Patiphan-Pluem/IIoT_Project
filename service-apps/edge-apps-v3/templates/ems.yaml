@@ -77,7 +77,8 @@ spec:
     minReplicas: 0
     maxReplicas: 10
     groupName: compute-pool
-    rayStartParams: {}
+    rayStartParams: 
+      num-cpus: "0.5"
     template:
       spec:
         nodeSelector:
