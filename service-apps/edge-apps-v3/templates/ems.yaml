@@ -17,7 +17,7 @@ spec:
           kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
         containers:
         - name: ray-head
-          image: "patiphan11/ems:v2"
+          image: "patiphan11/ems:v3"
           command: ["/bin/bash", "-c"]
           args:
             - |
@@ -84,7 +84,7 @@ spec:
           kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
         containers:
         - name: ray-worker
-          image: "patiphan11/ems:v2"
+          image: "patiphan11/ems:v3"
           readinessProbe:
             exec:
               command: ["/bin/sh", "-c", "exit 0"]
