@@ -73,7 +73,7 @@ spec:
               memory: "512Mi"
 
   workerGroupSpecs:
-  - replicas: 1
+  - replicas: 2
     minReplicas: 0
     maxReplicas: 10
     groupName: compute-pool
