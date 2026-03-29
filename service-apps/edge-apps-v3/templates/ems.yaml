@@ -85,6 +85,14 @@ spec:
         containers:
         - name: ray-worker
           image: "patiphan11/ems:v2"
+          readinessProbe:
+            exec:
+              command: ["/bin/true"] 
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/bin/true"] 
+            initialDelaySeconds: 5
           resources:
             requests:
               cpu: "100m"
