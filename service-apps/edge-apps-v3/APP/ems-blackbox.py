@@ -60,8 +60,12 @@ def get_message_count():
 
 def get_active_worker_count():
     nodes = ray.nodes()
-    active_workers = [node for node in nodes if node['Alive']]
-    return len(active_workers)
+    active_workers = [
+        node for node in nodes 
+        if node['Alive'] and "node:__internal_head__" not in node['Resources']
+    ]
+    count = len(active_workers)
+    return max(1, count)
 
 print(f"--- EMS Distributed Engine Starting (Mode: {SIMULATION_MODE}) ---")
 
