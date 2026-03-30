@@ -7,7 +7,7 @@ metadata:
   namespace: edge-apps
 spec:
   rayVersion: '2.9.0'
-  enableInTreeAutoscaling: false
+  enableInTreeAutoscaling: true
   headGroupSpec:
     rayStartParams:
       include-dashboard: 'false'
@@ -18,7 +18,7 @@ spec:
           kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
         containers:
         - name: ray-head
-          image: "patiphan11/ems:v4"
+          image: "patiphan11/ems:v5"
           command: ["/bin/bash", "-c"]
           args:
             - |
@@ -85,7 +85,7 @@ spec:
           kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
         containers:
         - name: ray-worker
-          image: "patiphan11/ems:v4"
+          image: "patiphan11/ems:v5"
           readinessProbe:
             exec:
               command: ["/bin/sh", "-c", "exit 0"]
