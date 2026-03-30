@@ -26,7 +26,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: REDIS_HOST
-              value: "redis"
+              value: "redis-{{ .name }}"
             - name: QUEUE_NAME
               value: "task_queue"
             - name: POD_NAME

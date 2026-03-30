@@ -44,7 +44,7 @@ spec:
                   name: timescaledb-{{ .name }}-app
                   key: dbname
             - name: REDIS_HOST
-              value: "redis" 
+              value: "redis-{{ .name }}" 
             - name: POD_NAME
               valueFrom:
                 fieldRef:
