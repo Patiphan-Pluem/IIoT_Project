@@ -1,0 +1,28 @@
+{{- range .Values.edges }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ems-worker-hpa-{{ .name }}
+  namespace: edge-apps
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ems-worker-{{ .name }}
+  minReplicas: 1
+  maxReplicas: 7
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50   # CPU >50% → scale
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70   # Memory >70% → scale
+{{- end }}
