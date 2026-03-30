@@ -68,45 +68,34 @@ def get_active_worker_count():
 
 print(f"--- EMS Distributed Engine Starting (Mode: {SIMULATION_MODE}) ---")
 
-pending_futures = []
+all_work_chunks = [] # เก็บงานที่รอคิว (i, start, end, total_n)
+active_tasks = []    # เก็บ futures ที่กำลังรันอยู่บน worker
 
 while True:
     cycle_start = time.time()
     try:
-        raw_count = get_message_count() 
-        if raw_count == 0:
-            raw_count = MANUAL_DATA_COUNT
-
-        data_count = raw_count // max(1, DIVIDER_VALUE)
+        raw_count = get_message_count() or MANUAL_DATA_COUNT
         
-        if data_count != 0:
+        if raw_count > 0:
+            chunk_size = 100 
+            for i in range(0, raw_count, chunk_size):
+                start = i
+                end = min(i + chunk_size, raw_count)
+                all_work_chunks.append((len(all_work_chunks), start, end, raw_count))
+
+        while all_work_chunks or active_tasks:
             num_pods = get_active_worker_count()
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] --- [Mode: {SIMULATION_MODE.capitalize()}] Detected {num_pods} Pod(s), Processing n={data_count} ---")
+            
+            while all_work_chunks and len(active_tasks) < num_pods * 2:
+                worker_id, s, e, tot = all_work_chunks.pop(0)
+                task_ref = ems_nested_loop_distributed.remote(worker_id, s, e, tot)
+                active_tasks.append(task_ref)
 
-            if len(pending_futures) < num_pods * 2:
-                if SIMULATION_MODE == 'matrix':
-                    for _ in range(3):
-                        pending_futures.append(ems_matrix_distributed.remote(data_count))
-                else:
-                    chunk = data_count // num_pods
-                    for i in range(num_pods):
-                        start = i * chunk
-                        end = (i + 1) * chunk if i != num_pods - 1 else data_count
-                        pending_futures.append(ems_nested_loop_distributed.remote(i, start, end, data_count))
-            
-            if pending_futures:
-                ready, pending_futures = ray.wait(pending_futures, num_returns=1, timeout=0.1)
-                for r in ready:
-                    result = ray.get(r)
-                    print(f"[{datetime.now().strftime('%H:%M:%S')}] {result}")
-            
-            if not pending_futures and data_count == 0:
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] No pending tasks. Waiting...")
-        
-        else:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] No new PMU data. Waiting...")
-        
-        time.sleep(max(0, 60 - (time.time() - cycle_start)))
+            ready, active_tasks = ray.wait(active_tasks, num_returns=1, timeout=1.0)
+            for r in ready:
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] {ray.get(r)}")
+
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Cycle finished.")
 
     except Exception as e:
         print(f"[{datetime.now().strftime('%H:%M:%S')}] Error: {e}")
