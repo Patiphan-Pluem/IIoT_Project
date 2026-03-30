@@ -1,0 +1,43 @@
+{{- range .Values.edges }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ems-worker-{{ .name }}
+  namespace: edge-apps
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: ems-worker
+      edge: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: ems-worker
+        edge: {{ .name }}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+      containers:
+        - name: worker
+          image: plubpo/ems-app:v7
+          command: ["python", "worker.py"]
+          imagePullPolicy: Always
+          env:
+            - name: REDIS_HOST
+              value: "redis"
+            - name: QUEUE_NAME
+              value: "task_queue"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m" 
+              memory: "500Mi"
+{{- end }}

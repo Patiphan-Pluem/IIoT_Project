@@ -1,0 +1,75 @@
+{{- range .Values.edges }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ems-producer-{{ .name }}
+  namespace: edge-apps  
+spec:
+  replicas: 1          
+  selector:
+    matchLabels:
+      app: ems-producer
+      edge: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: ems-producer
+        edge: {{ .name }}
+    spec:
+      spec:
+      nodeSelector:
+        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+      containers:
+        - name: producer
+          image: plubpo/ems-app:v7
+          command: ["python", "producer.py"]
+          imagePullPolicy: Always
+          env:
+            - name: DB_HOST
+              value: "timescaledb-{{ .name }}-entry"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-{{ .name }}-app
+                  key: username
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-{{ .name }}-app
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-{{ .name }}-app
+                  key: dbname
+            - name: REDIS_HOST
+              value: "redis" 
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name 
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ems-producer-service-{{ .name }}
+  namespace: edge-apps
+  labels:
+    app: ems-producer
+spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+      name: metrics
+  selector:
+    app: ems-producer
+{{- end }}
