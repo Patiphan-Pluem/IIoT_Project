@@ -2,7 +2,7 @@ name: Build and Push PMU and PDC
 
 on:
   push:
-    branches: ["main", "feat/KubeRay-testing"]
+    branches: ["main"]
     paths:
       - 'service-apps/**'
 
