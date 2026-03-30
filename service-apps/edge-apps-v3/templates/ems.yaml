@@ -75,7 +75,7 @@ spec:
   workerGroupSpecs:
   - replicas: 1
     minReplicas: 0
-    maxReplicas: 10
+    maxReplicas: 7
     groupName: compute-pool
     rayStartParams: 
       num-cpus: "1"
