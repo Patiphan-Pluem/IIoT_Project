@@ -2,7 +2,7 @@ name: Build and Push PMU and PDC
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feat/KubeRay-testing"]
     paths:
       - 'service-apps/**'
 
@@ -99,5 +99,4 @@ jobs:
           context: ./service-apps/edge-apps-v3/APP     
           file: ./service-apps/edge-apps-v3/APP/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ems:v4
-      
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ems:v5   # v4 ทำงานได้ดีแล้ว แต่ลอง v5 เพื่อตรวจสอบการสเกลแบบ Ray 

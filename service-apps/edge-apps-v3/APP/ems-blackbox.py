@@ -3,7 +3,7 @@ import time
 import psycopg2
 import numpy as np
 import ray
-from datetime import datetime  
+from datetime import datetime
 
 DB_HOST = os.getenv('DB_HOST', 'timescaledb-service')
 DB_USER = os.getenv('DB_USER', 'postgres')
@@ -24,7 +24,6 @@ def ems_nested_loop_distributed(worker_id, n_start, n_end, total_n):
         for j in range(total_n):
             for k in range(total_n):
                 res += 1
-    
     elapsed = time.time() - start_t
     return f"Worker {worker_id} finished [{n_start}:{n_end}] in {elapsed:.2f}s"
 
@@ -69,6 +68,8 @@ def get_active_worker_count():
 
 print(f"--- EMS Distributed Engine Starting (Mode: {SIMULATION_MODE}) ---")
 
+pending_futures = []
+
 while True:
     cycle_start = time.time()
     try:
@@ -82,27 +83,26 @@ while True:
             num_pods = get_active_worker_count()
             print(f"[{datetime.now().strftime('%H:%M:%S')}] --- [Mode: {SIMULATION_MODE.capitalize()}] Detected {num_pods} Pod(s), Processing n={data_count} ---")
 
-            if SIMULATION_MODE == 'matrix':
-                # Matrix Calculation
-                future = ems_matrix_distributed.remote(data_count)
-                elapsed = ray.get(future)
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] Matrix calculation finished in {elapsed:.2f} seconds.")
+            if len(pending_futures) < num_pods * 2:
+                if SIMULATION_MODE == 'matrix':
+                    for _ in range(3):
+                        pending_futures.append(ems_matrix_distributed.remote(data_count))
+                else:
+                    chunk = data_count // num_pods
+                    for i in range(num_pods):
+                        start = i * chunk
+                        end = (i + 1) * chunk if i != num_pods - 1 else data_count
+                        pending_futures.append(ems_nested_loop_distributed.remote(i, start, end, data_count))
             
-            else:
-                chunk = data_count // num_pods
-                futures = []
-                for i in range(num_pods):
-                    start = i * chunk
-                    end = (i + 1) * chunk if i != num_pods - 1 else data_count
-                    futures.append(ems_nested_loop_distributed.remote(i, start, end, data_count))
-                
-                worker_results = ray.get(futures)
-                for res_log in worker_results:
-                    print(f"[{datetime.now().strftime('%H:%M:%S')}] {res_log}")
-                
-                total_elapsed = time.time() - cycle_start
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] Distributed Loop among {num_pods} pods finished in {total_elapsed:.2f}s.")
-
+            if pending_futures:
+                ready, pending_futures = ray.wait(pending_futures, num_returns=1, timeout=0.1)
+                for r in ready:
+                    result = ray.get(r)
+                    print(f"[{datetime.now().strftime('%H:%M:%S')}] {result}")
+            
+            if not pending_futures and data_count == 0:
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] No pending tasks. Waiting...")
+        
         else:
             print(f"[{datetime.now().strftime('%H:%M:%S')}] No new PMU data. Waiting...")
         
