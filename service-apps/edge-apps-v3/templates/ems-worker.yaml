@@ -21,7 +21,7 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
       containers:
         - name: worker
-          image: plubpo/ems-app:v7
+          image: plubpo/ems-app:v7.1
           command: ["python", "worker.py"]
           imagePullPolicy: Always
           env:

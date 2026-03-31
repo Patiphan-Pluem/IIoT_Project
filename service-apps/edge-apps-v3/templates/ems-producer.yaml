@@ -22,7 +22,7 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
       containers:
         - name: producer
-          image: plubpo/ems-app:v7
+          image: plubpo/ems-app:v7.1
           command: ["python", "producer.py"]
           imagePullPolicy: Always
           env:
@@ -49,6 +49,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name 
+          
           resources:
             requests:
               cpu: "100m"
