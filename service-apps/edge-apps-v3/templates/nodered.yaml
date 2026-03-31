@@ -1,0 +1,57 @@
+{{- range .Values.edges }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-red-monitor-{{ .name }}
+  namespace: edge-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-red
+      edge: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: node-red
+        edge: {{ .name }}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+      containers:
+        - name: node-red
+          image: nodered/node-red:latest
+          ports:
+            - containerPort: 1880
+          env:
+            - name: TZ
+              value: "Asia/Bangkok"
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: node-red-data-{{ .name }}
+              mountPath: /data
+      volumes:
+        - name: node-red-data-{{ .name }}
+          emptyDir: {} 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-red-service-{{ .name }}
+  namespace: edge-apps
+spec:
+  type: NodePort
+  selector:
+    app: node-red
+  ports:
+    - port: 1880
+      targetPort: 1880
+      nodePort: 31880 
+{{- end }}
