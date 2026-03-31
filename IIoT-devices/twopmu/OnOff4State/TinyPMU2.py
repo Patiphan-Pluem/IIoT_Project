@@ -5,7 +5,7 @@ from synchrophasor.pmu import Pmu
 
 if __name__ == "__main__":
 
-    pmu = Pmu(ip="0.0.0.0", port=1410)
+    pmu = Pmu(ip="0.0.0.0", port=1411)
     pmu.logger.setLevel("INFO")
 
     freq      = 50
