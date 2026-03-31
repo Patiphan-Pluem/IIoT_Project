@@ -5,15 +5,15 @@ from synchrophasor.pmu import Pmu
 
 if __name__ == "__main__":
 
-    pmu = Pmu(ip="0.0.0.0", port=1411)
+    pmu = Pmu(ip="0.0.0.0", port=1410)
     pmu.logger.setLevel("INFO")
 
-    freq = 50
-    base_rate = 50
-    dt = 1.0 / base_rate
+    freq      = 50
+    rate_on   = 50   
+    rate_off  = 10    
 
     cfg = ConfigFrame2(
-        1410, 1000000, 1, "On-Off UTC Station", 1410,
+        1410, 1000000, 1, "On-Off UTC Station", 1411,
         (True, True, True, True),
         3, 1, 1,
         ["VA","VB","VC","ANALOG1","BREAKER 1 STATUS",
@@ -24,30 +24,37 @@ if __name__ == "__main__":
         [(0, "v"), (0, "v"), (0, "v")],
         [(1, "pow")],
         [(0x0000, 0xffff)],
-        freq, 1, base_rate
+        freq, 1, rate_on
     )
 
     pmu.set_configuration(cfg)
     pmu.set_header("On-Off-PMU")
     pmu.run()
 
-    lambda_on  = 0.1    # mean 10 s
-    lambda_off = 0.1    # mean 10 s
-    MIN_ON     = 8      # on atleast 8 s 
-    MIN_OFF    = 5      # off atlest 5 s 
+    lambda_on  = 0.068 
+    lambda_off = 0.068
+    MIN_ON     = 70
+    MIN_OFF    = 70
 
-    current_state = "ON"
+    current_state     = "ON"
     state_expiry_time = time.time() + MIN_ON + random.expovariate(lambda_on)
-
     streaming_started = False
-    next_time = 0
+    next_time         = 0
 
-    print(f"PMU running: ON-OFF")
+    print(f"PMU running: ON={rate_on}fps OFF={rate_off}fps", flush=True)
+
+    def precise_sleep_until(target):
+        remaining = target - time.time()
+        if remaining > 0.002:
+            time.sleep(remaining - 0.002)
+        while time.time() < target:
+            pass
 
     try:
         while True:
             now = time.time()
 
+            # State transition
             if now >= state_expiry_time:
                 if current_state == "ON":
                     current_state = "OFF"
@@ -64,13 +71,18 @@ if __name__ == "__main__":
 
             connected = bool(pmu.clients)
 
-            if not connected or current_state == "OFF":
+            if not connected:
                 streaming_started = False
                 time.sleep(0.01)
                 continue
 
+       
+            current_rate = rate_on if current_state == "ON" else rate_off
+            dt = 1.0 / current_rate
+
+            
             if not streaming_started:
-                print(f"[PMU] Aligning with UTC rollover...", flush=True)
+                print(f"[PMU] Aligning with UTC rollover... (state={current_state})", flush=True)
                 next_time = time.time() // 1 + 1
                 remaining = next_time - time.time()
                 if remaining > 0.002:
@@ -78,7 +90,7 @@ if __name__ == "__main__":
                 while time.time() < next_time:
                     pass
                 streaming_started = True
-                print(f"[PMU] Start streaming at {time.strftime('%H:%M:%S')}", flush=True)
+                print(f"[PMU] Start streaming at {time.strftime('%H:%M:%S')} | {current_rate}fps", flush=True)
 
             pmu.send_data(
                 phasors=[
@@ -91,11 +103,7 @@ if __name__ == "__main__":
             )
 
             next_time += dt
-            remaining = next_time - time.time()
-            if remaining > 0.002:
-                time.sleep(remaining - 0.002)
-            while time.time() < next_time:
-                pass
+            precise_sleep_until(next_time)
 
     finally:
         pmu.join()

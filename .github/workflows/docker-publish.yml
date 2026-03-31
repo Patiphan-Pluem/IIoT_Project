@@ -72,7 +72,7 @@ jobs:
           context: ./IIoT-devices/twopmu/OnOff4State       
           file: ./IIoT-devices/twopmu/OnOff4State/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-onoff4state:v1
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-onoff4state:v2
 
       # --- ส่วนของ 2 PMU Spike ---
       - name: Build and push PMU
