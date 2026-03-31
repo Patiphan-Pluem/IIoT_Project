@@ -49,6 +49,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name 
+            - name: MANUAL_DATA_COUNT
+              value: "0"
+            - name: DIVIDER_VALUE
+              value: "5"
           
           resources:
             requests:
