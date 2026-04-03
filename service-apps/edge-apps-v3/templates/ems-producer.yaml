@@ -57,6 +57,10 @@ kind: Service
 metadata:
   name: ems-producer-service-{{ .name }}
   namespace: edge-apps
+  annotations:
+    prometheus.io/scrape: "true"    
+    prometheus.io/port: "5000"     
+    prometheus.io/path: "/metrics" 
   labels:
     app: ems-producer
 spec:
