@@ -22,7 +22,7 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
       containers:
         - name: producer
-          image: plubpo/ems-app:v8.8
+          image: plubpo/ems-app:v8.9
           command: ["python", "producer.py"]
           imagePullPolicy: Always
           env:
