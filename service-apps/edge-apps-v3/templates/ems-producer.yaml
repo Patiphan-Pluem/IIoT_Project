@@ -48,7 +48,7 @@ spec:
             - name: DIVIDER_VALUE
               value: "1"
             - name: WORKER_SERVICE_NAME
-              value: "ems-worker-service"
+              value: "ems-worker-service-{{ .name }}"
             - name: NAMESPACE
               value: "edge-apps"
 ---
