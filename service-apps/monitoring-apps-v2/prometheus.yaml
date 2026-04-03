@@ -43,7 +43,7 @@ spec:
                 - action: labelmap
                   regex: __meta_kubernetes_node_label_(.+)
             - job_name: 'ems-producer'
-              scrape_interval: 5s
+              scrape_interval: 30s
               kubernetes_sd_configs:
                 - role: endpoints
                   namespaces:
