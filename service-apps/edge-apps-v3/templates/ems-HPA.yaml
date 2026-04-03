@@ -11,7 +11,7 @@ spec:
     kind: Deployment
     name: ems-worker-{{ .name }}
   minReplicas: 1
-  maxReplicas: 7
+  maxReplicas: 1
   metrics:
   - type: Resource
     resource:
