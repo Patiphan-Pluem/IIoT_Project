@@ -46,7 +46,7 @@ spec:
             - name: MANUAL_DATA_COUNT
               value: "0"
             - name: DIVIDER_VALUE
-              value: "5"
+              value: "3"
             - name: WORKER_SERVICE_NAME
               value: "ems-worker-service-{{ .name }}"
             - name: NAMESPACE
