@@ -42,6 +42,24 @@ spec:
               relabel_configs:
                 - action: labelmap
                   regex: __meta_kubernetes_node_label_(.+)
+            - job_name: 'ems-producer'
+              scrape_interval: 5s
+              kubernetes_sd_configs:
+                - role: endpoints
+                  namespaces:
+                    names:
+                      - edge-apps  
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_service_name]
+                  action: keep
+                  regex: ems-producer-service-.*
+
+                - source_labels: [__meta_kubernetes_endpoint_port_number]
+                  action: keep
+                  regex: "5000"
+                
+                - source_labels: [__meta_kubernetes_node_name]
+                  target_label: node
 
         kube-state-metrics:
           enabled: true
