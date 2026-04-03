@@ -22,7 +22,7 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
       containers:
         - name: producer
-          image: plubpo/ems-app:v8.7
+          image: plubpo/ems-app:v8.8
           command: ["python", "producer.py"]
           imagePullPolicy: Always
           env:
@@ -47,6 +47,10 @@ spec:
               value: "0"
             - name: DIVIDER_VALUE
               value: "1"
+            - name: WORKER_SERVICE_NAME
+              value: "ems-worker-service"
+            - name: NAMESPACE
+              value: "edge-apps"
 ---
 apiVersion: v1
 kind: Service
