@@ -2,7 +2,7 @@ name: Build and Push PMU and PDC
 
 on:
   push:
-    branches: [ "main" , "feat/ML-testing"]
+    branches: [ "main" ]
     paths:
       - 'IIoT-devices/**'
 
