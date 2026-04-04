@@ -70,4 +70,5 @@ spec:
       name: metrics
   selector:
     app: ems-producer
+    edge: {{ .name }}
 {{- end }}
