@@ -10,7 +10,7 @@ if __name__ == "__main__":
     pmu.logger.setLevel("DEBUG")
 
     freq = 50
-    base_rate = 50 # for50 Hz base rate is 10,25,50 message/sec
+    base_rate = 25 # for50 Hz base rate is 10,25,50 message/sec
                    # for 60 Hz base rate is 10,12,15,20,30,60 message/sec
 
     cfg = ConfigFrame2(
