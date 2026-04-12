@@ -72,7 +72,6 @@ metadata:
     prometheus.io/path: "/metrics" 
   labels:
     app: pdc
-    edge: {{ $edgeName }}
 spec:
   ports:
     - port: 5001
