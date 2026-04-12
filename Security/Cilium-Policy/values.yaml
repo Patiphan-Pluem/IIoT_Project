@@ -1,6 +1,6 @@
 # values-security.yaml
 security:
-  enabled: true
+  enabled: false
   namespace: edge-apps
   healthCheckPort: 8080 
 
