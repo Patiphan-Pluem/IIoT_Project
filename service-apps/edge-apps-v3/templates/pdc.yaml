@@ -23,7 +23,7 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode $edgeName }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ $edgeName | quote }}{{ end }}
       containers:
       - name: pdc
-        image: "patiphan11/pdc-pmus:v1"
+        image: "plubpo/pdc-app:v1"
         #command: ["python", "{{ $.Values.scripts.pdc }}"]
         env:
         - name: PMU_LIST
@@ -56,4 +56,29 @@ spec:
             secretKeyRef:
               name: timescaledb-{{ $edgeName }}-app
               key: dbname
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pdc-service-{{ .name }}
+  namespace: edge-apps
+  annotations:
+    prometheus.io/scrape: "true"    
+    prometheus.io/port: "5001"     
+    prometheus.io/path: "/metrics" 
+  labels:
+    app: pdc
+    edge: {{ $edgeName }}
+spec:
+  ports:
+    - port: 5001
+      targetPort: 5001
+      name: metrics
+  selector:
+    app: pdc
+    edge: {{ $edgeName }}
 {{ end }}
