@@ -1,5 +1,21 @@
 {{- range .Values.edges }}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: timescaledb-init-sql
+  namespace: edge-apps
+data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS pmu_measurements (
+        time TIMESTAMP NOT NULL,
+        frequency FLOAT,
+        mag_a FLOAT, ang_a FLOAT,
+        mag_b FLOAT, ang_b FLOAT,
+        mag_c FLOAT, ang_c FLOAT
+    );
+    SELECT create_hypertable('pmu_measurements', 'time', if_not_exists => TRUE);
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -13,6 +29,10 @@ spec:
     initdb:
       database: app
       owner: app
+      postInitApplicationSQLRefs:
+        configMap:
+          - name: timescaledb-init-sql
+            key: init.sql
 
   storage:
     size: 1Gi

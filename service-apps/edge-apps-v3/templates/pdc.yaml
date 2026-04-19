@@ -23,7 +23,7 @@ spec:
         kubernetes.io/hostname: {{ if index $.Values.maintenance_mode $edgeName }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ $edgeName | quote }}{{ end }}
       containers:
       - name: pdc
-        image: "plubpo/pdc-app:v1.1"
+        image: "plubpo/pdc-app:v2"
         #command: ["python", "{{ $.Values.scripts.pdc }}"]
         env:
         - name: PMU_LIST
