@@ -31,13 +31,11 @@ if __name__ == "__main__":
     pmu.set_header("On-Off-PMU")
     pmu.run()
 
-    lambda_on  = 0.05 
-    lambda_off = 0.05
-    MIN_ON     = 65
-    MIN_OFF    = 65
+    lambda_on  = 1/90
+    lambda_off = 1/90
 
     current_state     = "ON"
-    state_expiry_time = time.time() + MIN_ON + random.expovariate(lambda_on)
+    state_expiry_time = time.time() + random.expovariate(lambda_on)
     streaming_started = False
     next_time         = 0
 
@@ -58,13 +56,13 @@ if __name__ == "__main__":
             if now >= state_expiry_time:
                 if current_state == "ON":
                     current_state = "OFF"
-                    duration = MIN_OFF + random.expovariate(lambda_off)
+                    duration = random.expovariate(lambda_off)
                     state_expiry_time = now + duration
                     streaming_started = False
                     print(f"[{time.strftime('%H:%M:%S')}] >>> Switch to OFF ({duration:.1f}s)", flush=True)
                 else:
                     current_state = "ON"
-                    duration = MIN_ON + random.expovariate(lambda_on)
+                    duration = random.expovariate(lambda_on)
                     state_expiry_time = now + duration
                     streaming_started = False
                     print(f"[{time.strftime('%H:%M:%S')}] >>> Switch to ON ({duration:.1f}s)", flush=True)
