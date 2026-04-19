@@ -63,7 +63,7 @@ jobs:
           context: ./IIoT-devices/onepmu/PMU/Ramp         
           file: ./IIoT-devices/onepmu/PMU/Ramp/Dockerfile  
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-ramp:v2 #ล่าสุด v2
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu-ramp:v3 #ล่าสุด v2
       
       # --- ส่วนของ 2 PMU OnOff4State ---
       - name: Build and push PMU
