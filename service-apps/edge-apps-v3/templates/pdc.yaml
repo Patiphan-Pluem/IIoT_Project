@@ -40,7 +40,7 @@ spec:
               {{- end }}
             ]
         - name: DB_HOST
-          value: "timescaledb-{{ $edgeName }}-entry"
+          value: "timescaledb-{{ $edgeName }}-rw"
         - name: DB_USER
           valueFrom:
             secretKeyRef:
