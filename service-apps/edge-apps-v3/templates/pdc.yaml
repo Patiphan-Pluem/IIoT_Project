@@ -46,7 +46,7 @@ spec:
             secretKeyRef:
               name: timescaledb-{{ $edgeName }}-app
               key: username
-        - name: DB_PASSWORD
+        - name: DB_PASS
           valueFrom:
             secretKeyRef:
               name: timescaledb-{{ $edgeName }}-app
