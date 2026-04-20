@@ -17,8 +17,25 @@ spec:
         app: ems-worker
         edge: {{ .name }}
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ .name }}
+            
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ $.Values.cloud_node_name | quote }}
+
       containers:
       - name: worker
         image: plubpo/ems-app:v8.12

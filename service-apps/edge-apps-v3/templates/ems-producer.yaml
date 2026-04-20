@@ -18,8 +18,25 @@ spec:
         edge: {{ .name }}
     spec:
       serviceAccountName: ems-producer-sa
-      nodeSelector:
-        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode .name }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ .name | quote }}{{ end }}
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ .name }}
+            
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ $.Values.cloud_node_name | quote }}
+
       containers:
         - name: producer
           image: plubpo/ems-app:v8.12
@@ -27,22 +44,13 @@ spec:
           imagePullPolicy: Always
           env:
             - name: DB_HOST
-              value: "timescaledb-{{ .name }}-entry"
+              value: "timescaledb-service-{{ .name }}.edge-apps"
             - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: timescaledb-{{ .name }}-app
-                  key: username
+              value: "postgres"
             - name: DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: timescaledb-{{ .name }}-app
-                  key: password
+              value: "password"
             - name: DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: timescaledb-{{ .name }}-app
-                  key: dbname
+              value: "postgres"
             - name: MANUAL_DATA_COUNT
               value: "0"
             - name: DIVIDER_VALUE

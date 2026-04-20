@@ -19,9 +19,25 @@ spec:
         app: pdc
         edge: {{ $edgeName }}
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: {{ if index $.Values.maintenance_mode $edgeName }}{{ $.Values.cloud_node_name | quote }}{{ else }}{{ $edgeName | quote }}{{ end }}
-      containers:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ $edgeName }}
+            
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - {{ $.Values.cloud_node_name | quote }}
+                      
       - name: pdc
         image: "plubpo/pdc-app:v2.3"
         #command: ["python", "{{ $.Values.scripts.pdc }}"]
@@ -40,22 +56,13 @@ spec:
               {{- end }}
             ]
         - name: DB_HOST
-          value: "timescaledb-{{ $edgeName }}-entry.edge-apps"
+          value: "timescaledb-service-{{ .name }}.edge-apps"
         - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: timescaledb-{{ $edgeName }}-app
-              key: username
+          value: "postgres"
         - name: DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: timescaledb-{{ $edgeName }}-app
-              key: password
+          value: "password"
         - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: timescaledb-{{ $edgeName }}-app
-              key: dbname
+          value: "postgres"
         - name: POD_NAME
           valueFrom:
             fieldRef:
