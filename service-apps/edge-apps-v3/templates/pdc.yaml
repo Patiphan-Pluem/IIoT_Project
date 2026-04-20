@@ -37,7 +37,8 @@ spec:
                     operator: In
                     values:
                       - {{ $.Values.cloud_node_name | quote }}
-                      
+
+      containers:
       - name: pdc
         image: "plubpo/pdc-app:v2.3"
         #command: ["python", "{{ $.Values.scripts.pdc }}"]
