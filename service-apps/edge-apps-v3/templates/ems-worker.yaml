@@ -48,6 +48,7 @@ spec:
   clusterIP: None
   selector:
     app: ems-worker
+    edge: {{ .name }}
   ports:
     - protocol: TCP
       port: 8080             
