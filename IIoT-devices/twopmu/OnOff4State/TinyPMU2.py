@@ -9,7 +9,7 @@ if __name__ == "__main__":
     pmu.logger.setLevel("INFO")
 
     freq      = 50
-    rate_on   = 50   
+    rate_on   = 25   
     rate_off  = 10    
 
     cfg = ConfigFrame2(
