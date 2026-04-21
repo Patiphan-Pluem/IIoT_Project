@@ -40,7 +40,7 @@ spec:
 
       containers:
       - name: pdc
-        image: "plubpo/pdc-app:v2.3"
+        image: "plubpo/pdc-app:v2.7"
         #command: ["python", "{{ $.Values.scripts.pdc }}"]
         env:
         - name: PMU_LIST
