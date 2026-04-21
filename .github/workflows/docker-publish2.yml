@@ -22,8 +22,8 @@ jobs:
       - name: Build and push PMU baseline
         uses: docker/build-push-action@v5
         with:
-          context: ./IIoT-devices/onepmu/Baseline2/PMU10      
-          file: ./IIoT-devices/onepmu/Baseline2/PMU10/Dockerfile     
+          context: ./IIoT-devices/onepmu/PMU/Baseline2/PMU10      
+          file: ./IIoT-devices/onepmu/PMU/Baseline2/PMU10/Dockerfile     
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu10:v1
 
@@ -31,32 +31,32 @@ jobs:
       - name: Build and push PMU baseline
         uses: docker/build-push-action@v5
         with:
-          context: ./IIoT-devices/onepmu/Baseline2/PMU12      
-          file: ./IIoT-devices/onepmu/Baseline2/PMU12/Dockerfile     
+          context: ./IIoT-devices/onepmu/PMU/Baseline2/PMU12      
+          file: ./IIoT-devices/onepmu/PMU/Baseline2/PMU12/Dockerfile     
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu12:v1
 
       - name: Build and push PMU baseline
         uses: docker/build-push-action@v5
         with:
-          context: ./IIoT-devices/onepmu/Baseline2/PMU15      
-          file: ./IIoT-devices/onepmu/Baseline2/PMU15/Dockerfile     
+          context: ./IIoT-devices/onepmu/PMU/Baseline2/PMU15      
+          file: ./IIoT-devices/onepmu/PMU/Baseline2/PMU15/Dockerfile     
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu15:v1
 
       - name: Build and push PMU baseline
         uses: docker/build-push-action@v5
         with:
-          context: ./IIoT-devices/onepmu/Baseline2/PMU20     
-          file: ./IIoT-devices/onepmu/Baseline2/PMU20/Dockerfile     
+          context: ./IIoT-devices/onepmu/PMU/Baseline2/PMU20     
+          file: ./IIoT-devices/onepmu/PMU/Baseline2/PMU20/Dockerfile     
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu20:v1
 
       - name: Build and push PMU baseline
         uses: docker/build-push-action@v5
         with:
-          context: ./IIoT-devices/onepmu/Baseline2/PMU30      
-          file: ./IIoT-devices/onepmu/Baseline2/PMU30/Dockerfile     
+          context: ./IIoT-devices/onepmu/PMU/Baseline2/PMU30      
+          file: ./IIoT-devices/onepmu/PMU/Baseline2/PMU30/Dockerfile     
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu30:v1
       
