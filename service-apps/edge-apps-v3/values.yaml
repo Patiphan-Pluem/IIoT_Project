@@ -34,6 +34,12 @@ edges:
         ip: "172.20.10.6"
         port: 1411
         pdc_id: 21
+  - name: edge-d
+    pmus: 
+      - label: "PMU-D1"
+        ip: "172.18.1.94"
+        port: 1410
+        pdc_id: 20
         
 image:
   repository: "ghcr.io/patiphan-pluem/iiot-project"
