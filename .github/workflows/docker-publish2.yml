@@ -60,3 +60,18 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu30:v1
       
+      - name: Build and push PMU baseline
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices/onepmu/PMU/Baseline2/PMU50      
+          file: ./IIoT-devices/onepmu/PMU/Baseline2/PMU50/Dockerfile     
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu50:v1
+
+      - name: Build and push PMU baseline
+        uses: docker/build-push-action@v5
+        with:
+          context: ./IIoT-devices/onepmu/PMU/Baseline2/PMU60      
+          file: ./IIoT-devices/onepmu/PMU/Baseline2/PMU60/Dockerfile     
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pmu60:v1
