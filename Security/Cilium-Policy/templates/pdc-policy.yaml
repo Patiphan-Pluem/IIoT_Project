@@ -18,6 +18,15 @@ spec:
         - ports:
             - port: {{ $.Values.security.healthCheckPort | quote }}
               protocol: TCP
+    
+    - fromEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": monitoring
+            app: prometheus
+      toPorts:
+        - ports:
+            - port: "5001" 
+              protocol: TCP
 
   egress:
     - toCIDR:
