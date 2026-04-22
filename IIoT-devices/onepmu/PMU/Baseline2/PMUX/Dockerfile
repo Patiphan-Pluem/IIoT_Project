@@ -2,7 +2,7 @@ FROM python:3.9-slim
 
 ENV PYTHONUNBUFFERED=1
 
-ENV BASE_RATE=30
+ENV BASE_RATE=25
 
 RUN pip install numpy synchrophasor 
 
