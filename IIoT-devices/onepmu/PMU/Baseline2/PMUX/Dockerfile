@@ -10,4 +10,4 @@ WORKDIR /app
 
 COPY TinyPMUX.py /app/
 
-CMD ["python3", "TinyPMU12.py"]
+CMD ["python3", "TinyPMUX.py"]
