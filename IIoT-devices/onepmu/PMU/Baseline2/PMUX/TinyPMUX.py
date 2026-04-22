@@ -1,4 +1,4 @@
-import os  
+import os  #trigger
 import time
 import random
 from synchrophasor.frame import ConfigFrame2
