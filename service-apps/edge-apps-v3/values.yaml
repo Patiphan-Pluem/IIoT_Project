@@ -40,7 +40,7 @@ edges:
         ip: "172.18.1.94"
         port: 1410
         pdc_id: 20
-      - label: "PMU-D1"
+      - label: "PMU-D2"
         ip: "172.18.1.94"
         port: 1411
         pdc_id: 20
