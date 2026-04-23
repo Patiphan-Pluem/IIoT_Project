@@ -19,6 +19,7 @@ spec:
             enabled: true
             
         server:
+          retention: 20d
           service:
             type: NodePort
           persistentVolume:
